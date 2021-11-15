@@ -1,0 +1,33 @@
+﻿<Window x:Class="client.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:client"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles/Resource.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Border HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel>
+                <TextBlock Text="Логин" />
+                <TextBox GotKeyboardFocus="InputTextBoxLogin_OnGotKeyboardFocus" Name="InputTextBoxLogin" />
+                <TextBlock Text="Пароль" />
+                <PasswordBox GotKeyboardFocus="InputTextBoxLogin_OnGotKeyboardFocus" Name="InputTextBoxPassword" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Click="YesButton_OnClick" Name="YesButton" Content="Войти" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+        <Border HorizontalAlignment="Center" VerticalAlignment="Bottom">
+            <Button Style="{StaticResource Text-Button}" Click="ToReg_OnClick" Name="ToReg" Content="Регистрация" />
+        </Border>
+    </Grid>
+</Window>
