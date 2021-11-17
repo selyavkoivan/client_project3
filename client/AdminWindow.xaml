@@ -1,0 +1,126 @@
+﻿<Window x:Class="client.AdminWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:client"
+        mc:Ignorable="d"
+        Title="AdminMainPage" Height="700" Width="900">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles/Resource.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <TabControl>
+        <TabItem>
+            <TabItem.Header>
+                <Label Content="Личный кабинет"
+                       Name="Account"
+                       MouseLeftButtonDown="Account_OnMouseLeftButtonDown"
+                       HorizontalAlignment="Stretch" />
+                <!-- MouseLeftButtonDown="UIElement_OnMouseLeftButtonDown" -->
+            </TabItem.Header>
+            <Grid>
+                <Border HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="1 0"
+                        BorderBrush="gray" Width="900" Height="640">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="300" />
+                            <ColumnDefinition Width="600" />
+                        </Grid.ColumnDefinitions>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="300" />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Border VerticalAlignment="Center" HorizontalAlignment="Center" Width="250"
+                                    Height="250" BorderBrush="Gray" BorderThickness="1" CornerRadius="125" />
+                            <Canvas Grid.Row="1">
+                                <StackPanel Width="300">
+                                    <Border Padding="30 0">
+                                        <TextBlock Text="Должность" />
+                                    </Border>
+                                    <TextBox Name="Position" />
+                                    <Border Padding="30 0">
+                                        <TextBlock Text="Логин" />
+                                    </Border>
+                                    <TextBox GotKeyboardFocus="Login_OnGotKeyboardFocus" Name="Login" />
+                                    <Border Padding="30 0">
+                                        <TextBlock Text="Имя" />
+                                    </Border>
+                                    <TextBox Name="Name" />
+                                    <Border HorizontalAlignment="Center" VerticalAlignment="Top">
+                                        <Button Click="ButtonBase_OnClick" Content="изменить" />
+                                    </Border>
+                                </StackPanel>
+                            </Canvas>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </Grid>
+        </TabItem>
+        <TabItem>
+            <TabItem.Header>
+                <Label Content="Пользователи"
+                       Name="Users"
+                       MouseLeftButtonDown="UIElement_OnMouseLeftButtonDown"
+                       HorizontalAlignment="Stretch" />
+
+            </TabItem.Header>
+            <Grid>
+                <Border Padding="30">
+
+                    <DataGrid AutoGenerateColumns="False"
+                              Height="550"
+                              HorizontalAlignment="Left"
+                              Name="UGrid"
+                              VerticalAlignment="Top"
+                              Width="840"
+                              HeadersVisibility="Column"
+                              CanUserResizeColumns="False"
+                              SelectionMode="Single"
+                              IsReadOnly="true"
+                              ItemsSource="{Binding Path=User}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Фото" Binding="{Binding Path=photo}" Width="50" />
+                            <DataGridTextColumn Header="Логин" Binding="{Binding Path=login}" Width="260" />
+                            <DataGridTextColumn Header="Имя" Binding="{Binding Path=name}" Width="260" />
+                            <DataGridTextColumn Header="Количество заказов" Binding="{Binding}" Width="260" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Border>
+                <Expander Margin="25 10" Background="White" Name="ShowSelectedUser" Expanded="ShowSelectedUser_OnClick" 
+                                    Header="Показать пользователя" HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom" Width="300" BorderBrush="Black"
+                                    BorderThickness="2" >
+                    <Border Width="300" Background="White" Padding="10">
+                    <StackPanel>
+                        <TextBlock Text="Логин" />
+                        <TextBlock FontWeight="Normal" Name="ShowUserLogin" />
+                        <TextBlock Text="Имя" />
+                        <TextBlock FontWeight="Normal" Name="ShowUserName" />
+                        <TextBlock Text="Должность" />
+                        <TextBox Name="SetPosition" />
+                        <TextBlock Text="Выдать права администратора?" />
+                        <CheckBox Name="CheckBoxNewAdmin" Content="Выдать" />
+                        <Button Name="SubmitNewAdmin" Click="SubmitNewAdmin_OnClick" Content="Подтвердить" />
+                    </StackPanel>
+                    </Border>
+                </Expander>
+                <Popup Width="{Binding ElementName=ShowSelectedUser,
+                               Path=ActualWidth}"
+                       AllowsTransparency="True"
+                       IsOpen="{Binding ElementName=ShowSelectedUser,
+                                Path=IsExpanded,
+                                Mode=TwoWay}"
+                       Placement="Custom"
+                       PlacementTarget="{Binding ElementName=ShowSelectedUser}"
+                       StaysOpen="True"
+                       PopupAnimation="Slide"/>
+            </Grid>
+        </TabItem>
+    </TabControl>
+</Window>
