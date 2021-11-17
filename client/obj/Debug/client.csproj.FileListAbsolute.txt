@@ -32,5 +32,3 @@ X:\bsuir\sem5\курсач\client\client\obj\Debug\App.g.cs
 X:\bsuir\sem5\курсач\client\client\obj\Debug\SignUp.baml
 X:\bsuir\sem5\курсач\client\client\obj\Debug\AdminWindow.g.cs
 X:\bsuir\sem5\курсач\client\client\obj\Debug\AdminWindow.baml
-X:\bsuir\sem5\курсач\client\client\obj\Debug\Page.g.cs
-X:\bsuir\sem5\курсач\client\client\obj\Debug\Page.baml

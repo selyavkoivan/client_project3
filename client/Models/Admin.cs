@@ -4,47 +4,34 @@ using client.Controller;
 
 namespace client.Models
 {
-    public class Admin
+    public class Admin : User
     {
-       
+
         public int id { get; set; }
         public string position { get; set; }
-        public User user { get; set; }
 
-        public Admin(int id, string position, User user)
+        public Admin(int id, string position, User user) : base(user.ToString())
         {
             this.id = id;
             this.position = position;
-            this.user = user;
         }
 
-        public Admin(string data)
+        public Admin(string data) : base(data)
         {
             var dataArray = data.Split(Const.b);
-            id = int.Parse(dataArray[0]);
-            position = dataArray[1];
-            data = "";
-            for (int i = 2; i < dataArray.Length; i++)
-            {
-                data += dataArray[i] + Const.b;
-            }
-
-            user = new User(data);
-
+            id = int.Parse(dataArray[4]);
+            position = dataArray[5];
         }
 
         public Admin()
         {
             id = 0;
             position = "0";
-            user = new User();
         }
 
         public override string ToString()
         {
-            return id.ToString() + Const.b + position + Const.b + user;
-           
-            
+            return  base.ToString() + Const.b + id + Const.b + position;
         }
         
     }

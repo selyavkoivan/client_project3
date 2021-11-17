@@ -5,7 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:client"
         mc:Ignorable="d"
-        Title="AdminMainPage" Height="700" Width="1200">
+        Title="AdminMainPage" Height="700" Width="900">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -71,29 +71,55 @@
 
             </TabItem.Header>
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
                 <Border Padding="30">
+
                     <DataGrid AutoGenerateColumns="False"
-                              Height="700"
+                              Height="550"
                               HorizontalAlignment="Left"
                               Name="UGrid"
                               VerticalAlignment="Top"
-                              Width="600"
+                              Width="840"
                               HeadersVisibility="Column"
-                              CanUserResizeColumns="False">
+                              CanUserResizeColumns="False"
+                              SelectionMode="Single"
+                              IsReadOnly="true"
+                              ItemsSource="{Binding Path=User}">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Логин" Binding="{Binding Path=login}" Width="160" />
-                            <DataGridTextColumn Header="Пароль" Binding="{Binding Path=password}" Width="160" />
-                            <DataGridTextColumn Header="Имя" Binding="{Binding Path=name}" Width="160" />
+                            <DataGridTextColumn Header="Фото" Binding="{Binding Path=photo}" Width="50" />
+                            <DataGridTextColumn Header="Логин" Binding="{Binding Path=login}" Width="260" />
+                            <DataGridTextColumn Header="Имя" Binding="{Binding Path=name}" Width="260" />
+                            <DataGridTextColumn Header="Количество заказов" Binding="{Binding}" Width="260" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </Border>
-                <Border Grid.Column="1" Padding="20">
-                    <Button Content="12" />
-                </Border>
+                <Expander Margin="25 10" Background="White" Name="ShowSelectedUser" Expanded="ShowSelectedUser_OnClick" 
+                                    Header="Показать пользователя" HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom" Width="300" BorderBrush="Black"
+                                    BorderThickness="2" >
+                    <Border Width="300" Background="White" Padding="10">
+                    <StackPanel>
+                        <TextBlock Text="Логин" />
+                        <TextBlock FontWeight="Normal" Name="ShowUserLogin" />
+                        <TextBlock Text="Имя" />
+                        <TextBlock FontWeight="Normal" Name="ShowUserName" />
+                        <TextBlock Text="Должность" />
+                        <TextBox Name="SetPosition" />
+                        <TextBlock Text="Выдать права администратора?" />
+                        <CheckBox Name="CheckBoxNewAdmin" Content="Выдать" />
+                        <Button Name="SubmitNewAdmin" Click="SubmitNewAdmin_OnClick" Content="Подтвердить" />
+                    </StackPanel>
+                    </Border>
+                </Expander>
+                <Popup Width="{Binding ElementName=ShowSelectedUser,
+                               Path=ActualWidth}"
+                       AllowsTransparency="True"
+                       IsOpen="{Binding ElementName=ShowSelectedUser,
+                                Path=IsExpanded,
+                                Mode=TwoWay}"
+                       Placement="Custom"
+                       PlacementTarget="{Binding ElementName=ShowSelectedUser}"
+                       StaysOpen="True"
+                       PopupAnimation="Slide"/>
             </Grid>
         </TabItem>
     </TabControl>

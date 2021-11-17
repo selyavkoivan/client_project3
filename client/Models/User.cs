@@ -37,7 +37,7 @@ namespace client.Models
 
         public override string ToString()
         {
-            return id.ToString() + Const.b + login + Const.b + name + Const.b + password;
+            return id + Const.b + login + Const.b + name + Const.b + password;
         }
     }
 }

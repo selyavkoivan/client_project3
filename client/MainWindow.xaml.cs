@@ -20,7 +20,7 @@ namespace client
         public MainWindow()
         {   
             InitializeComponent();
-            Run("127.0.0.1", 50505);
+            Run("127.0.0.1", 60606);
         }
         public MainWindow(NetworkStream stream)
         {   

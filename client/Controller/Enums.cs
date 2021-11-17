@@ -25,7 +25,8 @@
         SignIn,
         ShowUsers,
         EditAdmin,
-        ShowAdmin
+        ShowAdmin,
+        SetNewAdmin
         
             
     }
@@ -40,6 +41,7 @@
                 case Commands.ShowUsers: return "sus";
                 case Commands.EditAdmin: return "adt";
                 case Commands.ShowAdmin: return "sad";
+                case Commands.SetNewAdmin: return "nad";
                 default: return "err";
             }
         }
