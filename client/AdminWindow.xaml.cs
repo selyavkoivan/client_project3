@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Net.Sockets;
@@ -28,6 +29,10 @@ namespace client
             Stream = stream;
             this.admin = admin;
             fillAdminData(admin);
+        }
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            Application.Current.Shutdown();
         }
 
         private void fillAdminData(Admin admin)

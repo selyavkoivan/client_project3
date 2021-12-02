@@ -22,13 +22,13 @@
         <Border HorizontalAlignment="Center" VerticalAlignment="Center">
             <StackPanel>
                 <TextBlock Text="Логин" />
-                <TextBox GotKeyboardFocus="InputTextBoxLogin_OnTextInput" Name="InputTextBoxLogin" />
+                <TextBox Width="250" GotKeyboardFocus="InputTextBoxLogin_OnTextInput" Name="InputTextBoxLogin" />
                 <TextBlock Text="Имя" />
-                <TextBox Name="InputTextBoxName" />
+                <TextBox Width="250" Name="InputTextBoxName" />
                 <TextBlock Text="Пароль" />
-                <PasswordBox GotKeyboardFocus="InputTextBoxRepeatePassword_OnTextInput" Name="InputTextBoxPassword" />
+                <PasswordBox Width="250" GotKeyboardFocus="InputTextBoxRepeatePassword_OnTextInput" Name="InputTextBoxPassword" />
                 <TextBlock Text="Повторите пароль" />
-                <PasswordBox GotKeyboardFocus="InputTextBoxRepeatePassword_OnTextInput"
+                <PasswordBox Width="250" GotKeyboardFocus="InputTextBoxRepeatePassword_OnTextInput"
                              Name="InputTextBoxRepeatPassword" />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">

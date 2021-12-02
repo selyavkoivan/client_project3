@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Net.Sockets;
 using System.Windows;
@@ -21,7 +22,10 @@ namespace client
 
             InitializeComponent();
         }
-
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
 
         private Byte[] Data;
 

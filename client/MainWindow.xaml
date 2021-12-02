@@ -17,9 +17,9 @@
         <Border HorizontalAlignment="Center" VerticalAlignment="Center">
             <StackPanel>
                 <TextBlock Text="Логин" />
-                <TextBox GotKeyboardFocus="InputTextBoxLogin_OnGotKeyboardFocus" Name="InputTextBoxLogin" />
+                <TextBox Width="250" GotKeyboardFocus="InputTextBoxLogin_OnGotKeyboardFocus" Name="InputTextBoxLogin" />
                 <TextBlock Text="Пароль" />
-                <PasswordBox GotKeyboardFocus="InputTextBoxLogin_OnGotKeyboardFocus" Name="InputTextBoxPassword" />
+                <PasswordBox Width="250" GotKeyboardFocus="InputTextBoxLogin_OnGotKeyboardFocus" Name="InputTextBoxPassword" />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button Click="YesButton_OnClick" Name="YesButton" Content="Войти" />
