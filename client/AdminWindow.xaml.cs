@@ -191,7 +191,7 @@ namespace client
             var product = (Product)GGrid.SelectedItem;
             if (product != null)
             {
-                Dispatcher.BeginInvoke((Action)(() => AdminTabControl.SelectedItem = EditProduct));
+                Dispatcher.BeginInvoke((Action)(() => AdminTabControl.SelectedItem = EditProductTabItem));
                 FillEditProductDataGrid(product);
             }
         }
@@ -206,6 +206,16 @@ namespace client
                 MessageBox.Show("Присутствуют пустые поля");
                 return;
             }
+            if(product.productId == 0) AddProduct(product);
+            else EditProduct(product);
+        }
+        private void AddProduct(Product product)
+        {
+            Packages.Send(Stream, Commands.AddProduct.GetString() + product);
+            SelectProductTabControl(product);
+        }
+        private void EditProduct(Product product)
+        {
             Packages.Send(Stream, Commands.EditProduct.GetString() + product);
             if (Packages.Recv(Stream) == Answer.Success.GetString())
             {
@@ -214,6 +224,11 @@ namespace client
             else MessageBox.Show("Ошибка изменения\nОна не должна была никогда появиться, а это значит с приложением явно что-то не то");
         }
 
+        private void AddNewProduct_OnClick(object sender, RoutedEventArgs e)
+        {
+            Dispatcher.BeginInvoke((Action)(() => AdminTabControl.SelectedItem = EditProductTabItem));
+            FillEditProductDataGrid(new Product());
+        }
     }
 
 }

@@ -16,6 +16,11 @@ namespace client.Models
         public string type { get; set; }
         public List<Size> sizes { get; set; }
 
+        public Product()
+        {
+            sizes = new List<Size>();
+        }
+
 
         public override string ToString()
         {

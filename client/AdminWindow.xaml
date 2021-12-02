@@ -142,9 +142,14 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </Border>
-                <Button Margin="0 0 30 30" Click="EditSelectedProduct_OnClick" HorizontalAlignment="Right"
-                        Name="EditSelectedProduct" Content="Изменить" />
+                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin=" 0 0 30 0">
+                    <Button Click="AddNewProduct_OnClick"
+                            Name="AddNEwProduct" Content="Добавить товар" />
+                    <Button Click="EditSelectedProduct_OnClick"
+                            Name="EditSelectedProduct" Content="Изменить" />
+                </StackPanel>
             </StackPanel>
+
         </TabItem>
         <TabItem Name="Product">
             <ScrollViewer>
@@ -252,7 +257,7 @@
                 </Grid>
             </ScrollViewer>
         </TabItem>
-        <TabItem Name="EditProduct">
+        <TabItem Name="EditProductTabItem">
             <ScrollViewer>
                 <Grid Margin="20" Name="EditPrGrid">
                     <Grid.RowDefinitions>
@@ -336,7 +341,7 @@
                             </DataGrid>
 
                             <Button Click="Confirm_OnClick" HorizontalAlignment="Left" Width="200" Name="Confirm"
-                                    Content="Подтвердить изменения" />
+                                    Content="Отправить" />
 
 
                         </StackPanel>
