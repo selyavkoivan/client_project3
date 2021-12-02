@@ -5,7 +5,6 @@
         <Setter Property="Padding" Value="10 5" />
         <Setter Property="Foreground" Value="Black" />
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Background" Value="Transparent"/>
 
     </Style>
     <Style TargetType="Button">

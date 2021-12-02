@@ -14,7 +14,7 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <TabControl>
+    <TabControl Name="AdminTabControl">
         <TabItem>
             <TabItem.Header>
                 <Label Content="Личный кабинет"
@@ -66,7 +66,7 @@
             <TabItem.Header>
                 <Label Content="Пользователи"
                        Name="Users"
-                       MouseLeftButtonDown="UIElement_OnMouseLeftButtonDown"
+                       MouseLeftButtonDown="Users_OnMouseLeftButtonDown"
                        HorizontalAlignment="Stretch" />
 
             </TabItem.Header>
@@ -92,35 +92,257 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </Border>
-                <Expander Margin="25 10" Background="White" Name="ShowSelectedUser" Expanded="ShowSelectedUser_OnClick" 
-                                    Header="Показать пользователя" HorizontalAlignment="Right"
-                                    VerticalAlignment="Bottom" Width="300" BorderBrush="Black"
-                                    BorderThickness="2" >
+                <Expander Margin="25 10" Background="White" Name="ShowSelectedUser" Expanded="ShowSelectedUser_OnClick"
+                          Header="Показать пользователя" HorizontalAlignment="Right"
+                          VerticalAlignment="Bottom" Width="300" BorderBrush="Black"
+                          BorderThickness="2">
                     <Border Width="300" Background="White" Padding="10">
-                    <StackPanel>
-                        <TextBlock Text="Логин" />
-                        <TextBlock FontWeight="Normal" Name="ShowUserLogin" />
-                        <TextBlock Text="Имя" />
-                        <TextBlock FontWeight="Normal" Name="ShowUserName" />
-                        <TextBlock Text="Должность" />
-                        <TextBox Name="SetPosition" />
-                        <TextBlock Text="Выдать права администратора?" />
-                        <CheckBox Name="CheckBoxNewAdmin" Content="Выдать" />
-                        <Button Name="SubmitNewAdmin" Click="SubmitNewAdmin_OnClick" Content="Подтвердить" />
-                    </StackPanel>
+                        <StackPanel>
+                            <TextBlock Text="Логин" />
+                            <TextBlock FontWeight="Normal" Name="ShowUserLogin" />
+                            <TextBlock Text="Имя" />
+                            <TextBlock FontWeight="Normal" Name="ShowUserName" />
+                            <TextBlock Text="Должность" />
+                            <TextBox Name="SetPosition" />
+                            <TextBlock Text="Выдать права администратора?" />
+                            <CheckBox Name="CheckBoxNewAdmin" Content="Выдать" />
+                            <Button Name="SubmitNewAdmin" Click="SubmitNewAdmin_OnClick" Content="Подтвердить" />
+                        </StackPanel>
                     </Border>
                 </Expander>
-                <Popup Width="{Binding ElementName=ShowSelectedUser,
-                               Path=ActualWidth}"
-                       AllowsTransparency="True"
-                       IsOpen="{Binding ElementName=ShowSelectedUser,
-                                Path=IsExpanded,
-                                Mode=TwoWay}"
-                       Placement="Custom"
-                       PlacementTarget="{Binding ElementName=ShowSelectedUser}"
-                       StaysOpen="True"
-                       PopupAnimation="Slide"/>
             </Grid>
+        </TabItem>
+        <TabItem>
+            <TabItem.Header>
+                <Label Content="Товары"
+                       Name="Goods"
+                       MouseLeftButtonDown="Goods_OnMouseLeftButtonDown"
+                       HorizontalAlignment="Stretch" />
+            </TabItem.Header>
+            <StackPanel>
+                <Border Padding="30">
+                    <DataGrid AutoGenerateColumns="False"
+                              Height="500"
+                              HorizontalAlignment="Left"
+                              Name="GGrid"
+                              VerticalAlignment="Top"
+                              Width="840"
+                              HeadersVisibility="Column"
+                              CanUserResizeColumns="False"
+                              SelectionMode="Single"
+                              IsReadOnly="true"
+                              ItemsSource="{Binding Path=Product}"
+                              MouseDoubleClick="GGrid_OnMouseDoubleClick">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Название" Binding="{Binding Path=name}" Width="260" />
+                            <DataGridTextColumn Header="Цена" Binding="{Binding Path=price}" Width="160" />
+                            <DataGridTextColumn Header="Материал" Binding="{Binding Path=material}" Width="260" />
+                            <DataGridTextColumn Header="Количество в наличии" Binding="{Binding Path=sizes}"
+                                                Width="160" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Border>
+                <Button Margin="0 0 30 30" Click="EditSelectedProduct_OnClick" HorizontalAlignment="Right"
+                        Name="EditSelectedProduct" Content="Изменить" />
+            </StackPanel>
+        </TabItem>
+        <TabItem Name="Product">
+            <ScrollViewer>
+                <Grid Margin="20" Name="PrGrid">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="150" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="1" CornerRadius="75" />
+                        <Canvas Grid.Column="1" Margin="20">
+                            <TextBlock Width="750" TextWrapping="Wrap"
+                                       Name="NameProductBlock"
+                                       FontSize="30" FontWeight="Medium" />
+                        </Canvas>
+                    </Grid>
+                    <Grid Grid.Row="1" Margin="0 10 0 0">
+                        <StackPanel>
+                            <TextBlock Width="850" TextWrapping="Wrap"
+                                       Name="DescriptionProductBlock" FontSize="18" FontWeight="Thin" />
+                            <DataGrid Name="PrDataGrid"
+                                      HorizontalAlignment="Left"
+                                      HorizontalScrollBarVisibility="Hidden"
+                                      VerticalScrollBarVisibility="Hidden"
+                                      HeadersVisibility="Column"
+                                      CanUserResizeColumns="False"
+                                      SelectionMode="Single"
+                                      ItemsSource="{Binding Path=Product}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Узор" Binding="{Binding Path=pattern}" />
+                                    <DataGridTextColumn Header="Цвет" Binding="{Binding Path=color}" />
+                                    <DataGridTextColumn Header="Материал" Binding="{Binding Path=material}" />
+                                    <DataGridTextColumn Header="Цена" Binding="{Binding Path=price}" />
+                                    <DataGridTextColumn Header="Тип" Binding="{Binding Path=type}" />
+                                </DataGrid.Columns>
+                                <DataGrid.ColumnHeaderStyle>
+                                    <Style TargetType="{x:Type DataGridColumnHeader}">
+                                        <Setter Property="LayoutTransform">
+                                            <Setter.Value>
+                                                <TransformGroup>
+                                                    <RotateTransform Angle="90" />
+                                                </TransformGroup>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </DataGrid.ColumnHeaderStyle>
+                                <DataGrid.LayoutTransform>
+                                    <TransformGroup>
+                                        <RotateTransform Angle="-90" />
+                                    </TransformGroup>
+                                </DataGrid.LayoutTransform>
+                                <DataGrid.CellStyle>
+                                    <Style TargetType="DataGridCell">
+                                        <Setter Property="LayoutTransform">
+                                            <Setter.Value>
+                                                <TransformGroup>
+                                                    <RotateTransform Angle="90" />
+                                                </TransformGroup>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </DataGrid.CellStyle>
+                            </DataGrid>
+                            <TextBlock FontSize="18" FontWeight="Thin" Text="Размеры в наличии" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="300" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <DataGrid Grid.Column="0" AutoGenerateColumns="False"
+                                          HorizontalAlignment="Left"
+                                          Name="SizesDataGrid"
+                                          HeadersVisibility="Column"
+                                          SelectionMode="Single"
+                                          CanUserAddRows="False"
+                                          ItemsSource="{Binding Path=Size}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn IsReadOnly="True" Header="Размер"
+                                                            Binding="{Binding Path=size}" />
+                                        <DataGridTextColumn IsReadOnly="True" Header="Количество"
+                                                            Binding="{Binding Path=count}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                                <Canvas Grid.Column="1">
+                                    <StackPanel>
+                                        <Border Padding="30 0">
+                                            <TextBlock Text="Адрес доставки (не обязательно)" />
+                                        </Border>
+                                        <TextBox Name="DeliveryAddress" />
+                                        <Border Padding="30 0">
+                                            <TextBlock Text="Выберите количество" />
+                                        </Border>
+                                        <TextBox Name="CountOfProduct" />
+                                        <Button Click="CreateOrder_OnClick" Name="CreateOrder" Content="Заказать" />
+                                    </StackPanel>
+
+                                </Canvas>
+                            </Grid>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </ScrollViewer>
+        </TabItem>
+        <TabItem Name="EditProduct">
+            <ScrollViewer>
+                <Grid Margin="20" Name="EditPrGrid">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="150" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="1" CornerRadius="75" />
+                        <Canvas Grid.Column="1" Margin="20">
+                            <TextBox Width="650" TextWrapping="Wrap"
+                                     Name="EditNameProductBlock"
+                                     FontSize="30" FontWeight="Medium" />
+                        </Canvas>
+                    </Grid>
+                    <Grid Grid.Row="1" Margin="0 10 0 0">
+                        <StackPanel>
+                            <TextBox Width="800" TextWrapping="Wrap"
+                                     Name="EditDescriptionProductBlock" FontSize="18" FontWeight="Thin" />
+                            <DataGrid Name="EditPrDataGrid"
+                                      AutoGenerateColumns="False"
+                                      HorizontalAlignment="Left"
+                                      HorizontalScrollBarVisibility="Hidden"
+                                      VerticalScrollBarVisibility="Hidden"
+                                      HeadersVisibility="Column"
+                                      CanUserAddRows="False"
+                                      SelectionMode="Single"
+                                      ItemsSource="{Binding Path=Product}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Узор" Binding="{Binding Path=pattern}" />
+                                    <DataGridTextColumn Header="Цвет" Binding="{Binding Path=color}" />
+                                    <DataGridTextColumn Header="Материал" Binding="{Binding Path=material}" />
+                                    <DataGridTextColumn Header="Цена" Binding="{Binding Path=price}" />
+                                    <DataGridTextColumn Header="Тип" Binding="{Binding Path=type}" />
+                                </DataGrid.Columns>
+                                <DataGrid.ColumnHeaderStyle>
+                                    <Style TargetType="{x:Type DataGridColumnHeader}">
+                                        <Setter Property="LayoutTransform">
+                                            <Setter.Value>
+                                                <TransformGroup>
+                                                    <RotateTransform Angle="90" />
+                                                </TransformGroup>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </DataGrid.ColumnHeaderStyle>
+                                <DataGrid.LayoutTransform>
+                                    <TransformGroup>
+                                        <RotateTransform Angle="-90" />
+                                    </TransformGroup>
+                                </DataGrid.LayoutTransform>
+                                <DataGrid.CellStyle>
+                                    <Style TargetType="DataGridCell">
+                                        <Setter Property="LayoutTransform">
+                                            <Setter.Value>
+                                                <TransformGroup>
+                                                    <RotateTransform Angle="90" />
+                                                </TransformGroup>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </DataGrid.CellStyle>
+                            </DataGrid>
+                            <TextBlock FontSize="18" FontWeight="Thin" Text="Размеры в наличии" />
+
+                            <DataGrid AutoGenerateColumns="False"
+                                      HorizontalAlignment="Left"
+                                      Name="EditSizesDataGrid"
+                                      HeadersVisibility="Column"
+                                      SelectionMode="Single"
+                                      ItemsSource="{Binding Path=Size}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Размер"
+                                                        Binding="{Binding Path=size, ValidatesOnExceptions=True}" />
+                                    <DataGridTextColumn Header="Количество"
+                                                        Binding="{Binding Path=count, ValidatesOnExceptions=True}" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <Button Click="Confirm_OnClick" HorizontalAlignment="Left" Width="200" Name="Confirm"
+                                    Content="Подтвердить изменения" />
+
+
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </ScrollViewer>
         </TabItem>
     </TabControl>
 </Window>

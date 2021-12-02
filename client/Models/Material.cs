@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Text.Json;
 using System.Windows;
 using client.Controller;
 
@@ -6,33 +7,24 @@ namespace client.Models
 {
     public class Material
     {
-        public int id { get; set; }
+        public int materialId { get; set; }
         public string material { get; set; }
         public string color { get; set; }
         public string pattern { get; set; }
 
+        
 
-        public Material(string data)
+        public Material() { }
+
+        public bool isFull()
         {
-            var dataArray = data.Split(Const.b);
-            id = int.Parse(dataArray[0]);
-            material = dataArray[1];
-            color = dataArray[2];
-            pattern = dataArray[3];
+            if (material == string.Empty || color == string.Empty) return false;
+            return true;
         }
-
-        public Material()
-        {
-            id = 0;
-            material = "0";
-            color = "0";
-            pattern = "0";
-        }
-
 
         public override string ToString()
         {
-            return id + Const.b + material + Const.b + color + Const.b + pattern;
+            return JsonSerializer.Serialize(this);
         }
     }
 }

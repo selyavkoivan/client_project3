@@ -1,35 +1,36 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
+using System.Windows;
 using client.Controller;
 
 namespace client.Models
 {
     public class Product : Material
     {
-        public int id { get; set; }
+        public int productId { get; set; }
         public string name { get; set; }
         public string description { get; set; }
         public double price { get; set; }
-        public int count { get; set; }
-        public string size { get; set; }
+        public string type { get; set; }
+        public List<Size> sizes { get; set; }
 
-
-        public Product(string data) : base(data)
-        {
-            var dataArray = data.Split(Const.b);
-            id = int.Parse(dataArray[4]);
-            name = dataArray[5];
-            description = dataArray[6];
-            price = double.Parse(dataArray[7]);
-            count = int.Parse(dataArray[8]);
-            size = dataArray[9];
-        }
-
-        
 
         public override string ToString()
         {
-            return base.ToString() + Const.b + id + Const.b + name +
-                   Const.b + description + Const.b + price + Const.b + count + Const.b + size;
+            return JsonSerializer.Serialize(this);
+        }
+
+        public int GetCount()
+        {
+            return sizes.Sum(s => s.count);
+        }
+
+        public bool isFull()
+        {
+            if (name == string.Empty || price <= 0 || type == string.Empty || !base.isFull()) return false;
+            return sizes.Where(s => s.isFull() == false).ToList().Count == 0;
         }
     }
 }

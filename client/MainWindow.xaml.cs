@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,6 +10,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using client.Controller;
 using client.Models;
+using client.Controller.Const;
+
 
 namespace client
 {
@@ -18,12 +21,13 @@ namespace client
     public partial class MainWindow
     {
         public MainWindow()
-        {   
+        {
             InitializeComponent();
             Run("127.0.0.1", 60606);
         }
+
         public MainWindow(NetworkStream stream)
-        {   
+        {
             InitializeComponent();
             Stream = stream;
         }
@@ -41,24 +45,28 @@ namespace client
 
         private void YesButton_OnClick(object sender, RoutedEventArgs e)
         {
-            if(InputTextBoxLogin.Text == string.Empty ||InputTextBoxPassword.Password == string.Empty) return;
+            if (InputTextBoxLogin.Text == string.Empty || InputTextBoxPassword.Password == string.Empty) return;
 
-            var text = CommandsExtensions.GetString(Commands.SignIn) + InputTextBoxLogin.Text + Const.b + InputTextBoxPassword.Password;
+            var text = CommandsExtensions.GetString(Commands.SignIn) + new User
+            {
+                login = InputTextBoxLogin.Text,
+                password = InputTextBoxPassword.Password
+            };
             Packages.Send(Stream, text);
             var answer = Packages.Recv(Stream);
-            var answerArray = new[] { answer.Substring(0, 1),  answer.Substring(1) };
-            if (answerArray[0] == RoleExtensions.GetString(Role.Admin))
+            var answerArray = new[] { answer.Substring(0, 1), answer.Substring(1) };
+            if (answerArray[0] == Role.Admin.GetString())
             {
-                new AdminWindow(Stream, new Admin(answerArray[1])).Show();
+                new AdminWindow(Stream, JsonSerializer.Deserialize<Admin>(answerArray[1])).Show();
                 Hide();
             }
-            else if (answerArray[0] == RoleExtensions.GetString(Role.User))
+            else if (answerArray[0] == Role.User.GetString())
             {
-                MessageBox.Show("hello user"); 
+                MessageBox.Show("hello user");
             }
             else
             {
-                MessageBox.Show("Неверно введен логин или пароль"); 
+                MessageBox.Show("Неверно введен логин или пароль");
                 InputTextBoxPassword.BorderBrush = Brushes.Red;
                 InputTextBoxLogin.BorderBrush = Brushes.Red;
             }

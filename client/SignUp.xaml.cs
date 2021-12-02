@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.IO;
 using System.Net.Sockets;
 using System.Windows;
@@ -7,6 +6,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using client.Controller;
+using client.Controller.Const;
+using client.Models;
 
 namespace client
 {
@@ -26,8 +27,10 @@ namespace client
 
         private void YesButton_OnClick(object sender, RoutedEventArgs e)
         {
-            if(InputTextBoxLogin.Text == string.Empty ||InputTextBoxName.Text == string.Empty ||InputTextBoxPassword.Password == string.Empty ||InputTextBoxRepeatPassword.Password == string.Empty) return;
-            
+            if (InputTextBoxLogin.Text == string.Empty || InputTextBoxName.Text == string.Empty ||
+                InputTextBoxPassword.Password == string.Empty ||
+                InputTextBoxRepeatPassword.Password == string.Empty) return;
+
             if (InputTextBoxPassword.Password != InputTextBoxRepeatPassword.Password)
             {
                 InputTextBoxPassword.BorderBrush = Brushes.Red;
@@ -36,8 +39,12 @@ namespace client
                 return;
             }
 
-            var message = CommandsExtensions.GetString(Commands.SignUp) + InputTextBoxLogin.Text + "\b" + InputTextBoxPassword.Password +
-                          "\b" + InputTextBoxName.Text;
+            var message = Commands.SignUp.GetString() + new User
+            {
+                login = InputTextBoxLogin.Text,
+                password = InputTextBoxPassword.Password,
+                name = InputTextBoxName.Text
+            };
             Packages.Send(Stream, message);
             if (Packages.Recv(Stream) == "0")
             {

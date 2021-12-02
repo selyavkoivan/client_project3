@@ -7,18 +7,6 @@ using System.Windows;
 
 namespace client.Controller
 {
-    public static class StringChecker
-    {
-        public static string Check(this string str)
-        {
-            if (str.Last() == Const.w || str.Last() == Const.b)
-            {
-                return str.Substring(0, str.Length - 1);
-            }
-
-            return str;
-        }
-    }
     public static class Packages
     {
       
@@ -33,7 +21,7 @@ namespace client.Controller
             var messageBuffer = new byte[size];
             stream.Read(messageBuffer, 0, size);
            
-            return Encoding.UTF8.GetString(messageBuffer).Check();
+            return Encoding.UTF8.GetString(messageBuffer);
         }
         
         public static void Send(NetworkStream stream, string message)
