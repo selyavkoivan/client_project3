@@ -10,14 +10,24 @@ namespace client.Models
         public string login{ get; set; }
         public string name{ get; set; }
         public string password{ get; set; }
+        public PaymentCard card { get; set; }
+        public bool status { get; set; }
 
         public User() { }
 
-        public User(int id, string login, string name, string password) {
+        public User(int id, string login, string name, string password, bool status) {
             this.userId = id;
             this.login = login;
             this.name = name;
             this.password = password;
+            this.status = status;
+        }
+        public User(int id, string login, string name, string password, PaymentCard card) {
+            this.userId = id;
+            this.login = login;
+            this.name = name;
+            this.password = password;
+            this.card = card;
         }
         
         public User(User user)
@@ -26,7 +36,8 @@ namespace client.Models
             login = user.login;
             name = user.name;
             password = user.password;
-          
+            status = user.status;
+
         }
      
 

@@ -28,18 +28,26 @@ namespace client
             InitializeComponent();
             Stream = stream;
             this.admin = admin;
-            fillAdminData(admin);
+            Packages.Send(Stream, Commands.ShowUserOrders.GetString() + new User(admin));
+            FillOrderTable(JsonSerializer.Deserialize<List<Order>>(Packages.Recv(Stream)));
+            FillAdminData(admin);
         }
         protected override void OnClosing(CancelEventArgs e)
         {
             Application.Current.Shutdown();
         }
 
-        private void fillAdminData(Admin admin)
+        private void FillAdminData(Admin admin)
         {
             Name.Text = admin.name;
             Login.Text = admin.login;
             Position.Text = admin.position;
+          
+        }
+
+        private void FillOrderTable(List<Order> orders)
+        {
+            UserOrderGrid.ItemsSource = orders;
         }
 
 
@@ -52,7 +60,11 @@ namespace client
         {
             Packages.Send(Stream, Commands.ShowUsers.GetString());
             var answer = Packages.Recv(Stream);
-            var users = JsonSerializer.Deserialize<List<User>>(answer);
+            var users = JsonSerializer.Deserialize<List<CalculatedUser>>(answer);
+            Packages.Send(Stream, Commands.ShowOrders.GetString());
+            answer = Packages.Recv(Stream);
+            var orders = JsonSerializer.Deserialize<List<Order>>(answer);
+            users.ForEach(u => u.Count = orders.Count(o => o.user.userId == u.userId));
             UGrid.ItemsSource = users;
         }
 
@@ -60,7 +72,7 @@ namespace client
         {
             var newAdmin = new Admin
             {
-                adminId = admin.adminId, position = Position.Text, name = Name.Text, login = Login.Text, password = admin.password, userId = admin.userId
+                adminId = admin.adminId, position = Position.Text, name = Name.Text, login = Login.Text, password = admin.password, userId = admin.userId, card = admin.card
             };
             var data = Commands.EditAdmin.GetString() + newAdmin;
             Packages.Send(Stream, data);
@@ -85,14 +97,14 @@ namespace client
         private void Account_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             Packages.Send(Stream, Commands.ShowAdmin.GetString() + admin);
-            fillAdminData(JsonSerializer.Deserialize<Admin>(Packages.Recv(Stream)));
+            FillAdminData(JsonSerializer.Deserialize<Admin>(Packages.Recv(Stream)));
         }
 
 
         private void ShowSelectedUser_OnClick(object sender, RoutedEventArgs e)
         {
             var user = GetSelectedUser();
-            if (user != null) FillUserData(user);
+            if (user != null) FillUserToAdminData(user);
             else
             {
                 ShowSelectedUser.IsExpanded = false;
@@ -105,7 +117,7 @@ namespace client
             return (User)UGrid.SelectedItem;
         }
 
-        private void FillUserData(User user)
+        private void FillUserToAdminData(User user)
         {
             ShowUserLogin.Text = user.login;
             ShowUserName.Text = user.name;
@@ -124,10 +136,18 @@ namespace client
 
         private void Goods_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            Packages.Send(Stream, Commands.ShowGoods.GetString());
-            var data = Packages.Recv(Stream);
+            FillGoodsTable();
+        }
 
-            GGrid.ItemsSource = JsonSerializer.Deserialize<List<Product>>(data);
+        private void FillGoodsTable()
+        {
+            Packages.Send(Stream, Commands.ShowGoods.GetString());
+            
+            var goods = JsonSerializer.Deserialize<List<CalculatedProduct>>(Packages.Recv(Stream));
+            goods.ForEach(p => p.SetCount());
+            GGrid.ItemsSource = goods;
+
+
         }
 
         private void GGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -155,6 +175,7 @@ namespace client
         {
             try
             {
+                if (admin.card == null || admin.card.PaymentCardId == 0) new Card(admin, Stream).ShowDialog();
                 var count = int.Parse(CountOfProduct.Text);
                 if (count <= 0) throw new Exception();
                 var product = (Product)GGrid.SelectedItem;
@@ -228,6 +249,56 @@ namespace client
         {
             Dispatcher.BeginInvoke((Action)(() => AdminTabControl.SelectedItem = EditProductTabItem));
             FillEditProductDataGrid(new Product());
+        }
+
+        private void DeleteSelectedProduct_OnClick(object sender, RoutedEventArgs e)
+        {
+            var product = (Product)GGrid.SelectedItem;
+            if (product != null)
+            {
+                Packages.Send(Stream, Commands.DeleteProduct.GetString() + product);
+                FillGoodsTable();
+            }
+        }
+
+        private void UserGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var user = UGrid.SelectedItem as User;
+            FillUserData(user);
+            ShowUserTabControl();
+        }
+        private void FillUserData(User user)
+        {
+            UserName.Text = user.name;
+            UserLogin.Text = user.login;
+            UserStatus.Text = user.status ? "заблокирован" : "нет блокировки";
+            Packages.Send(Stream, Commands.ShowUserOrders.GetString() + user);
+            SelectedUserOrderGrid.ItemsSource = JsonSerializer.Deserialize<List<Order>>(Packages.Recv(Stream));
+        }
+        private void ShowUserTabControl()
+        {
+            Dispatcher.BeginInvoke((Action)(() => AdminTabControl.SelectedItem = UserAccount));
+        }
+
+        private void ShowCard_OnClick(object sender, RoutedEventArgs e)
+        {
+            Card card = new Card(admin, Stream);
+            card.ShowDialog();
+            Packages.Send(Stream, Commands.ShowAdmin.GetString() + admin);
+            admin = JsonSerializer.Deserialize<Admin>(Packages.Recv(Stream));
+            FillAdminData(admin);
+        }
+
+        private void ChangeStatus_OnClick(object sender, RoutedEventArgs e)
+        {
+            User user = new User();
+            user.login = UserLogin.Text;
+            user.status = UserStatus.Text != "заблокирован";
+       
+            Packages.Send(Stream, Commands.EditUserStatus.GetString() + user);
+            Packages.Send(Stream, Commands.ShowUser.GetString() + user );
+            user = JsonSerializer.Deserialize<User>(Packages.Recv(Stream));
+            FillUserData(user);
         }
     }
 

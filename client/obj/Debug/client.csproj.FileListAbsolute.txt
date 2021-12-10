@@ -51,3 +51,7 @@ X:\bsuir\sem5\курсач\client\client\bin\Debug\System.Text.Json.xml
 X:\bsuir\sem5\курсач\client\client\bin\Debug\System.Threading.Tasks.Extensions.xml
 X:\bsuir\sem5\курсач\client\client\bin\Debug\System.ValueTuple.xml
 X:\bsuir\sem5\курсач\client\client\obj\Debug\client.csproj.client.exe.config
+X:\bsuir\sem5\курсач\client\client\bin\Debug\Newtonsoft.Json.dll
+X:\bsuir\sem5\курсач\client\client\bin\Debug\Newtonsoft.Json.xml
+X:\bsuir\sem5\курсач\client\client\obj\Debug\Card.g.cs
+X:\bsuir\sem5\курсач\client\client\obj\Debug\Card.baml

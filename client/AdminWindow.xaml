@@ -21,45 +21,70 @@
                        Name="Account"
                        MouseLeftButtonDown="Account_OnMouseLeftButtonDown"
                        HorizontalAlignment="Stretch" />
-                <!-- MouseLeftButtonDown="UIElement_OnMouseLeftButtonDown" -->
             </TabItem.Header>
+
             <Grid>
-                <Border HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="1 0"
-                        BorderBrush="gray" Width="900" Height="640">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="300" />
-                            <ColumnDefinition Width="600" />
-                        </Grid.ColumnDefinitions>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="300" />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-                            <Border VerticalAlignment="Center" HorizontalAlignment="Center" Width="250"
-                                    Height="250" BorderBrush="Gray" BorderThickness="1" CornerRadius="125" />
-                            <Canvas Grid.Row="1">
-                                <StackPanel Width="300">
-                                    <Border Padding="30 0">
-                                        <TextBlock Text="Должность" />
-                                    </Border>
-                                    <TextBox Name="Position" />
-                                    <Border Padding="30 0">
-                                        <TextBlock Text="Логин" />
-                                    </Border>
-                                    <TextBox GotKeyboardFocus="Login_OnGotKeyboardFocus" Name="Login" />
-                                    <Border Padding="30 0">
-                                        <TextBlock Text="Имя" />
-                                    </Border>
-                                    <TextBox Name="Name" />
-                                    <Border HorizontalAlignment="Center" VerticalAlignment="Top">
-                                        <Button Click="ButtonBase_OnClick" Content="изменить" />
-                                    </Border>
-                                </StackPanel>
-                            </Canvas>
-                        </Grid>
-                    </Grid>
-                </Border>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300" />
+                    <ColumnDefinition Width="600" />
+                </Grid.ColumnDefinitions>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="300" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Border VerticalAlignment="Center" HorizontalAlignment="Center" Width="250"
+                            Height="250" BorderBrush="Gray" BorderThickness="1" CornerRadius="125" />
+                    <Canvas Grid.Row="1">
+                        <StackPanel Width="300">
+                            <Border Padding="30 0">
+                                <TextBlock Text="Должность" />
+                            </Border>
+                            <TextBox Name="Position" />
+                            <Border Padding="30 0">
+                                <TextBlock Text="Логин" />
+                            </Border>
+                            <TextBox GotKeyboardFocus="Login_OnGotKeyboardFocus" Name="Login" />
+                            <Border Padding="30 0">
+                                <TextBlock Text="Имя" />
+                            </Border>
+                            <TextBox Name="Name" />
+                            <Border HorizontalAlignment="Center" VerticalAlignment="Top">
+                                <Button Click="ButtonBase_OnClick" Content="изменить" />
+                            </Border>
+                            <Border HorizontalAlignment="Center" VerticalAlignment="Top">
+                                <Button Name="ShowCard" Content="Карта" Click="ShowCard_OnClick" />
+                            </Border>
+
+                        </StackPanel>
+
+
+                    </Canvas>
+                </Grid>
+                <Grid Grid.Column="1">
+                    <DataGrid AutoGenerateColumns="False"
+                              Height="550"
+                              HorizontalAlignment="Left"
+                              Name="UserOrderGrid"
+                              VerticalAlignment="Top"
+                              Width="550"
+                              HeadersVisibility="Column"
+                              CanUserResizeColumns="False"
+                              SelectionMode="Single"
+                              IsReadOnly="true"
+                              ItemsSource="{Binding Path=Order}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Продукт" Binding="{Binding Path=product.name}" Width="200" />
+                            <DataGridTextColumn Header="Количество" Binding="{Binding Path=count}" Width="50" />
+                            <DataGridTextColumn Header="Дата"
+                                                Binding="{Binding Path=date, StringFormat={}{0:dd/MM/yyyy}}"
+                                                Width="100" />
+                            <DataGridTextColumn Header="Доставка" Binding="{Binding Path=deliveryAddress}" Width="200" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                </Grid>
             </Grid>
         </TabItem>
         <TabItem>
@@ -83,12 +108,13 @@
                               CanUserResizeColumns="False"
                               SelectionMode="Single"
                               IsReadOnly="true"
-                              ItemsSource="{Binding Path=User}">
+                              MouseDoubleClick="UserGrid_OnMouseDoubleClick"
+                              ItemsSource="{Binding Path=CalculatedUser}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Фото" Binding="{Binding Path=photo}" Width="50" />
                             <DataGridTextColumn Header="Логин" Binding="{Binding Path=login}" Width="260" />
                             <DataGridTextColumn Header="Имя" Binding="{Binding Path=name}" Width="260" />
-                            <DataGridTextColumn Header="Количество заказов" Binding="{Binding}" Width="260" />
+                            <DataGridTextColumn Header="Количество заказов" Binding="{Binding Count}" Width="260" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </Border>
@@ -131,13 +157,21 @@
                               CanUserResizeColumns="False"
                               SelectionMode="Single"
                               IsReadOnly="true"
-                              ItemsSource="{Binding Path=Product}"
+                              ItemsSource="{Binding Path=CalculatedProduct}"
                               MouseDoubleClick="GGrid_OnMouseDoubleClick">
+                        <DataGrid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Click="EditSelectedProduct_OnClick" Name="EditSelectedProduct"
+                                          Header="Изменить" />
+                                <MenuItem Name="DeleteSelectedProduct" Click="DeleteSelectedProduct_OnClick"
+                                          Header="Удалить" />
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Название" Binding="{Binding Path=name}" Width="260" />
                             <DataGridTextColumn Header="Цена" Binding="{Binding Path=price}" Width="160" />
                             <DataGridTextColumn Header="Материал" Binding="{Binding Path=material}" Width="260" />
-                            <DataGridTextColumn Header="Количество в наличии" Binding="{Binding Path=sizes}"
+                            <DataGridTextColumn Header="Количество в наличии" Binding="{Binding Count}"
                                                 Width="160" />
                         </DataGrid.Columns>
                     </DataGrid>
@@ -145,8 +179,6 @@
                 <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin=" 0 0 30 0">
                     <Button Click="AddNewProduct_OnClick"
                             Name="AddNEwProduct" Content="Добавить товар" />
-                    <Button Click="EditSelectedProduct_OnClick"
-                            Name="EditSelectedProduct" Content="Изменить" />
                 </StackPanel>
             </StackPanel>
 
@@ -348,6 +380,71 @@
                     </Grid>
                 </Grid>
             </ScrollViewer>
+        </TabItem>
+        <TabItem Name="UserAccount">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300" />
+                    <ColumnDefinition Width="600" />
+                </Grid.ColumnDefinitions>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="300" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Border VerticalAlignment="Center" HorizontalAlignment="Center" Width="250"
+                            Height="250" BorderBrush="Gray" BorderThickness="1" CornerRadius="125" />
+                    <Canvas Grid.Row="1">
+                        <StackPanel Width="300">
+                            <Border Padding="30 0">
+                                <TextBlock Text="Логин" />
+                            </Border>
+                            <Border Padding="30 0">
+                                <TextBlock FontStretch="Medium" Name="UserLogin" />
+                            </Border>
+                            <Border Padding="30 0">
+                                <TextBlock FontStretch="Medium" Text="Имя" />
+                            </Border>
+                            <Border Padding="30 0">
+                                <TextBlock Name="UserName" />
+                            </Border>
+                            <Border Padding="30 0">
+                                <TextBlock FontStretch="Medium" Text="Блокировка" />
+                            </Border>
+                            <Border Padding="30 0">
+                                <TextBlock Name="UserStatus" />
+                            </Border>
+                            <Button Name="ChangeStatus" Content="Изменить статус" Click="ChangeStatus_OnClick"/>
+                        </StackPanel>
+
+
+                    </Canvas>
+                </Grid>
+                <Grid Grid.Column="1">
+                    <DataGrid AutoGenerateColumns="False"
+                              Height="550"
+                              HorizontalAlignment="Left"
+                              Name="SelectedUserOrderGrid"
+                              VerticalAlignment="Top"
+                              Width="550"
+                              HeadersVisibility="Column"
+                              CanUserResizeColumns="False"
+                              SelectionMode="Single"
+                              IsReadOnly="true"
+                              ItemsSource="{Binding Path=Order}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Продукт" Binding="{Binding Path=product.name}" Width="200" />
+                            <DataGridTextColumn Header="Количество" Binding="{Binding Path=count}" Width="50" />
+                            <DataGridTextColumn Header="Дата"
+                                                Binding="{Binding Path=date, StringFormat={}{0:dd/MM/yyyy}}"
+                                                Width="100" />
+                            <DataGridTextColumn Header="Доставка" Binding="{Binding Path=deliveryAddress}" Width="200" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                </Grid>
+            </Grid>
         </TabItem>
     </TabControl>
 </Window>

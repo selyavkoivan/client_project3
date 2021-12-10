@@ -3,7 +3,7 @@
     public enum Answer
     {
         Success,
-        Erroe
+        Error
     }
     public static class AnswerExtensions
     {
@@ -12,7 +12,7 @@
             switch (role)
             {
                 case Answer.Success: return "s";
-                case Answer.Erroe: return "e";
+                case Answer.Error: return "e";
                 default: return "e";
             }
         }

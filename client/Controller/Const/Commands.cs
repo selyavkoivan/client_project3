@@ -17,7 +17,13 @@
         AddOrder,
         DeleteProduct,
         DeleteOrder,
-        Error
+        AddCard,
+        EditCard,
+        DeleteCard,
+        EditUser,
+        Error,
+        EditUserStatus,
+        ShowUser
     }
 
     public static class CommandsExtensions
@@ -42,7 +48,13 @@
                 case Commands.DeleteOrder: return "ddr";
                 case Commands.ShowProduct: return "spd";
                 case Commands.Error: return "err";
-                default: return "err";
+                case Commands.AddCard: return "acd";
+                case Commands.EditCard: return "ecd";
+                case Commands.DeleteCard: return "dcd";
+                case Commands.EditUser: return "udt";
+                case Commands.EditUserStatus: return "ust";
+                case Commands.ShowUser: return "sur";
+                    default: return "err";
             }
         }
     }

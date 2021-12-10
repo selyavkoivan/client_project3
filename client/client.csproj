@@ -39,6 +39,10 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
@@ -91,6 +95,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Card.xaml.cs">
+      <DependentUpon>Card.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controller\Const\Answer.cs" />
     <Compile Include="Controller\Const\Commands.cs" />
     <Compile Include="Controller\Const\Role.cs" />
@@ -98,8 +105,11 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Admin.cs" />
+    <Compile Include="Models\CalculatedProduct.cs" />
+    <Compile Include="Models\CalculatedUser.cs" />
     <Compile Include="Models\Material.cs" />
     <Compile Include="Models\Order.cs" />
+    <Compile Include="Models\PaymentCard.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Models\Size.cs" />
     <Compile Include="Models\User.cs" />
@@ -114,6 +124,7 @@
       <DependentUpon>Views.resx</DependentUpon>
     </Compile>
     <Page Include="AdminWindow.xaml" />
+    <Page Include="Card.xaml" />
     <Page Include="MainWindow.xaml" />
     <Page Include="SignUp.xaml">
       <Generator>MSBuild:Compile</Generator>

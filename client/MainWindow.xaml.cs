@@ -47,7 +47,7 @@ namespace client
         {
             if (InputTextBoxLogin.Text == string.Empty || InputTextBoxPassword.Password == string.Empty) return;
 
-            var text = CommandsExtensions.GetString(Commands.SignIn) + new User
+            var text = Commands.SignIn.GetString() + new User
             {
                 login = InputTextBoxLogin.Text,
                 password = InputTextBoxPassword.Password
