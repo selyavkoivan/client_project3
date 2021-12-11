@@ -23,7 +23,10 @@
         EditUser,
         Error,
         EditUserStatus,
-        ShowUser
+        ShowUser,
+        FilterUserOrders,
+        FilterGoods,
+        FIlterUsers
     }
 
     public static class CommandsExtensions
@@ -54,7 +57,10 @@
                 case Commands.EditUser: return "udt";
                 case Commands.EditUserStatus: return "ust";
                 case Commands.ShowUser: return "sur";
-                    default: return "err";
+                case Commands.FilterGoods: return "fgs";
+                case Commands.FilterUserOrders: return "fuo";
+                case Commands.FIlterUsers: return "fus";
+                default: return "err";
             }
         }
     }

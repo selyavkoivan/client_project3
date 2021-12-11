@@ -142,5 +142,50 @@ namespace client
                 MessageBox.Show("Неверный ввод количества или не выбран размер");
             }
         }
+         string getOrdersFilter(string filter)
+        {
+            switch (filter)
+            {
+                case "Название": return "test.product.name";
+                case "Количество": return "countInOrder";
+                case "Адрес": return "deliveryAddress";
+                case "Дата": return "date";
+            }
+
+            return string.Empty;
+        }
+
+        private void SubmitOrderFilter_OnClick(object sender, RoutedEventArgs e)
+        {
+            string column = getOrdersFilter(OrderFilterColumns.Text);
+            if (column == String.Empty) return;
+            var filter = new SortConfiguration(column,
+                OrderFilter.Text, user.userId);
+            Packages.Send(Stream, Commands.FilterUserOrders.GetString() + filter);
+            FillOrderTable(JsonSerializer.Deserialize<List<Order>>(Packages.Recv(Stream)));
+        }
+      
+        string getGoodsFilter(string filter)
+        {
+            switch (filter)
+            {
+                case "Название": return "name";
+                case "Тип": return "type";
+                case "Материал": return "material";
+                case "Цвет": return "color";
+                case "Цена": return "price";
+            }
+
+            return string.Empty;
+        }
+        private void SubmitGoodsFilter_OnClick(object sender, RoutedEventArgs e)
+        {
+            string column = getGoodsFilter(GoodsFilterColumns.Text);
+            if (column == String.Empty) return;
+            var filter = new SortConfiguration(column,
+                GoodsFilter.Text);
+            Packages.Send(Stream, Commands.FilterGoods.GetString() + filter);
+            GGrid.ItemsSource = JsonSerializer.Deserialize<List<Product>>(Packages.Recv(Stream));
+        }
     }
 }

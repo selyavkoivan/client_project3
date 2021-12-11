@@ -32,6 +32,7 @@ namespace client
             FillOrderTable(JsonSerializer.Deserialize<List<Order>>(Packages.Recv(Stream)));
             FillAdminData(admin);
         }
+
         protected override void OnClosing(CancelEventArgs e)
         {
             Application.Current.Shutdown();
@@ -42,7 +43,6 @@ namespace client
             Name.Text = admin.name;
             Login.Text = admin.login;
             Position.Text = admin.position;
-          
         }
 
         private void FillOrderTable(List<Order> orders)
@@ -72,7 +72,8 @@ namespace client
         {
             var newAdmin = new Admin
             {
-                adminId = admin.adminId, position = Position.Text, name = Name.Text, login = Login.Text, password = admin.password, userId = admin.userId, card = admin.card
+                adminId = admin.adminId, position = Position.Text, name = Name.Text, login = Login.Text,
+                password = admin.password, userId = admin.userId, card = admin.card
             };
             var data = Commands.EditAdmin.GetString() + newAdmin;
             Packages.Send(Stream, data);
@@ -144,12 +145,10 @@ namespace client
         private void FillGoodsTable()
         {
             Packages.Send(Stream, Commands.ShowGoods.GetString());
-            
+
             var goods = JsonSerializer.Deserialize<List<CalculatedProduct>>(Packages.Recv(Stream));
             goods.ForEach(p => p.SetCount());
             GGrid.ItemsSource = goods;
-
-
         }
 
         private void GGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -183,9 +182,9 @@ namespace client
                 var product = (Product)GGrid.SelectedItem;
                 product.sizes = new List<Size> { (Size)SizesDataGrid.SelectedItem };
                 if (product.sizes[0] == null) throw new Exception();
-                var order = DeliveryAddress.Text == string.Empty ? 
-                    new Order(admin, product, count, DateTime.Now) : 
-                    new Order(admin, product, count, DateTime.Now, DeliveryAddress.Text);  
+                var order = DeliveryAddress.Text == string.Empty
+                    ? new Order(admin, product, count, DateTime.Now)
+                    : new Order(admin, product, count, DateTime.Now, DeliveryAddress.Text);
                 Packages.Send(Stream, Commands.AddOrder.GetString() + order);
                 if (Packages.Recv(Stream) == Answer.Success.GetString())
                 {
@@ -229,14 +228,17 @@ namespace client
                 MessageBox.Show("Присутствуют пустые поля");
                 return;
             }
-            if(product.productId == 0) AddProduct(product);
+
+            if (product.productId == 0) AddProduct(product);
             else EditProduct(product);
         }
+
         private void AddProduct(Product product)
         {
             Packages.Send(Stream, Commands.AddProduct.GetString() + product);
             SelectProductTabControl(product);
         }
+
         private void EditProduct(Product product)
         {
             Packages.Send(Stream, Commands.EditProduct.GetString() + product);
@@ -244,7 +246,9 @@ namespace client
             {
                 SelectProductTabControl(product);
             }
-            else MessageBox.Show("Ошибка изменения\nОна не должна была никогда появиться, а это значит с приложением явно что-то не то");
+            else
+                MessageBox.Show(
+                    "Ошибка изменения\nОна не должна была никогда появиться, а это значит с приложением явно что-то не то");
         }
 
         private void AddNewProduct_OnClick(object sender, RoutedEventArgs e)
@@ -269,6 +273,7 @@ namespace client
             FillUserData(user);
             ShowUserTabControl();
         }
+
         private void FillUserData(User user)
         {
             UserName.Text = user.name;
@@ -277,6 +282,7 @@ namespace client
             Packages.Send(Stream, Commands.ShowUserOrders.GetString() + user);
             SelectedUserOrderGrid.ItemsSource = JsonSerializer.Deserialize<List<Order>>(Packages.Recv(Stream));
         }
+
         private void ShowUserTabControl()
         {
             Dispatcher.BeginInvoke((Action)(() => AdminTabControl.SelectedItem = UserAccount));
@@ -296,12 +302,76 @@ namespace client
             User user = new User();
             user.login = UserLogin.Text;
             user.status = UserStatus.Text != "заблокирован";
-       
+
             Packages.Send(Stream, Commands.EditUserStatus.GetString() + user);
-            Packages.Send(Stream, Commands.ShowUser.GetString() + user );
+            Packages.Send(Stream, Commands.ShowUser.GetString() + user);
             user = JsonSerializer.Deserialize<User>(Packages.Recv(Stream));
             FillUserData(user);
         }
-    }
 
+        string getOrdersFilter(string filter)
+        {
+            switch (filter)
+            {
+                case "Название": return "test.product.name";
+                case "Количество": return "countInOrder";
+                case "Адрес": return "deliveryAddress";
+                case "Дата": return "date";
+            }
+
+            return string.Empty;
+        }
+
+        private void SubmitOrderFilter_OnClick(object sender, RoutedEventArgs e)
+        {
+            string column = getOrdersFilter(OrderFilterColumns.Text);
+            if (column == String.Empty) return;
+            var filter = new SortConfiguration(column,
+                OrderFilter.Text, admin.userId);
+            Packages.Send(Stream, Commands.FilterUserOrders.GetString() + filter);
+            FillOrderTable(JsonSerializer.Deserialize<List<Order>>(Packages.Recv(Stream)));
+        }
+        string getUsersFilter(string filter)
+        {
+            switch (filter)
+            {
+                case "Логин": return "login";
+                case "Имя": return "name";
+            }
+
+            return string.Empty;
+        }
+
+        private void SubmitUsersFilter_OnClick(object sender, RoutedEventArgs e)
+        {
+            string column = getUsersFilter(UsersFilterColumns.Text);
+            if (column == String.Empty) return;
+            var filter = new SortConfiguration(column,
+                UsersFilter.Text);
+            Packages.Send(Stream, Commands.FIlterUsers.GetString() + filter);
+            UGrid.ItemsSource = JsonSerializer.Deserialize<List<User>>(Packages.Recv(Stream));
+        }
+        string getGoodsFilter(string filter)
+        {
+            switch (filter)
+            {
+                case "Название": return "name";
+                case "Тип": return "type";
+                case "Материал": return "material";
+                case "Цвет": return "color";
+                case "Цена": return "price";
+            }
+
+            return string.Empty;
+        }
+        private void SubmitGoodsFilter_OnClick(object sender, RoutedEventArgs e)
+        {
+            string column = getGoodsFilter(GoodsFilterColumns.Text);
+            if (column == String.Empty) return;
+            var filter = new SortConfiguration(column,
+                GoodsFilter.Text);
+            Packages.Send(Stream, Commands.FilterGoods.GetString() + filter);
+            GGrid.ItemsSource = JsonSerializer.Deserialize<List<Product>>(Packages.Recv(Stream));
+        }
+    }
 }

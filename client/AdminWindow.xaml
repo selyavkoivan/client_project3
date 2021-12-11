@@ -63,11 +63,20 @@
                     </Canvas>
                 </Grid>
                 <Grid Grid.Column="1">
+                    <StackPanel Height="50" Orientation="Horizontal" VerticalAlignment="Top" >
+                    <ComboBox Name="OrderFilterColumns" Height="25">
+                        <ComboBoxItem Name="productName" Content="Название"/>
+                        <ComboBoxItem Name="countInOrder" Content="Количество"/>
+                        <ComboBoxItem Name="deliveryAddress" Content="Адрес"/>
+                        <ComboBoxItem Name="date" Content="Дата"/>
+                    </ComboBox>
+                    <TextBox Margin="10 0 10 0" Name="OrderFilter"/>
+                    <Button Click="SubmitOrderFilter_OnClick" Content="Отфильтровать" Name="SubmitOrderFilter"/>
+                    </StackPanel>
                     <DataGrid AutoGenerateColumns="False"
                               Height="550"
                               HorizontalAlignment="Left"
-                              Name="UserOrderGrid"
-                              VerticalAlignment="Top"
+                              Name="UserOrderGrid" 
                               Width="550"
                               HeadersVisibility="Column"
                               CanUserResizeColumns="False"
@@ -96,13 +105,21 @@
 
             </TabItem.Header>
             <Grid>
+                <StackPanel Margin="30 0 0 0" Height="50" Orientation="Horizontal" VerticalAlignment="Top" >
+                    <ComboBox Name="UsersFilterColumns" Height="25">
+                        <ComboBoxItem Name="login" Content="Логин"/>
+                        <ComboBoxItem Name="name" Content="Имя"/>
+                    </ComboBox>
+                    <TextBox Margin="10 0 10 0" Name="UsersFilter"/>
+                    <Button Click="SubmitUsersFilter_OnClick" Content="Отфильтровать" Name="SubmitUsersFilter"/>
+                </StackPanel>
                 <Border Padding="30">
-
+                    
                     <DataGrid AutoGenerateColumns="False"
-                              Height="550"
+                              Height="510"
                               HorizontalAlignment="Left"
                               Name="UGrid"
-                              VerticalAlignment="Top"
+                             
                               Width="840"
                               HeadersVisibility="Column"
                               CanUserResizeColumns="False"
@@ -145,7 +162,19 @@
                        MouseLeftButtonDown="Goods_OnMouseLeftButtonDown"
                        HorizontalAlignment="Stretch" />
             </TabItem.Header>
+        
             <StackPanel>
+                <StackPanel Margin="30 0 0 0" Height="50" Orientation="Horizontal" VerticalAlignment="Top" >
+                    <ComboBox Name="GoodsFilterColumns" Height="25">
+                        <ComboBoxItem Name="productNameG" Content="Название"/>
+                        <ComboBoxItem Name="type" Content="Тип"/>
+                        <ComboBoxItem Name="price" Content="Цена"/>
+                        <ComboBoxItem Name="material" Content="Материал"/>
+                        <ComboBoxItem Name="color" Content="Цвет"/>
+                    </ComboBox>
+                    <TextBox Margin="10 0 10 0" Name="GoodsFilter"/>
+                    <Button Click="SubmitGoodsFilter_OnClick"  Content="Отфильтровать" Name="SubmitGoodsFilter"/>
+                </StackPanel>
                 <Border Padding="30">
                     <DataGrid AutoGenerateColumns="False"
                               Height="500"
