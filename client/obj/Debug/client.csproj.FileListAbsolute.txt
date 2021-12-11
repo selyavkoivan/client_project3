@@ -57,3 +57,13 @@ X:\bsuir\sem5\курсач\client\client\obj\Debug\Card.g.cs
 X:\bsuir\sem5\курсач\client\client\obj\Debug\Card.baml
 X:\bsuir\sem5\курсач\client\client\obj\Debug\UserWindow.g.cs
 X:\bsuir\sem5\курсач\client\client\obj\Debug\UserWindow.baml
+X:\bsuir\sem5\курсач\client\client\bin\Debug\LiveCharts.dll
+X:\bsuir\sem5\курсач\client\client\bin\Debug\LiveCharts.Wpf.dll
+X:\bsuir\sem5\курсач\client\client\bin\Debug\LiveCharts.pdb
+X:\bsuir\sem5\курсач\client\client\bin\Debug\LiveCharts.xml
+X:\bsuir\sem5\курсач\client\client\bin\Debug\LiveCharts.Wpf.pdb
+X:\bsuir\sem5\курсач\client\client\bin\Debug\LiveCharts.Wpf.xml
+X:\bsuir\sem5\курсач\client\client\obj\Debug\LifiChartDiagram.g.cs
+X:\bsuir\sem5\курсач\client\client\obj\Debug\LifiChartDiagram.baml
+X:\bsuir\sem5\курсач\client\client\obj\Debug\profitDiagram.g.cs
+X:\bsuir\sem5\курсач\client\client\obj\Debug\profitDiagram.baml

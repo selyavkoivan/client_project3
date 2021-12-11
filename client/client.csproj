@@ -34,6 +34,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df">
+      <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df">
+      <HintPath>..\packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.5.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
       <Private>True</Private>
@@ -101,6 +109,9 @@
     <Compile Include="Controller\Const\Answer.cs" />
     <Compile Include="Controller\Const\Commands.cs" />
     <Compile Include="Controller\Const\Role.cs" />
+    <Compile Include="LifiChartDiagram.xaml.cs">
+      <DependentUpon>LifiChartDiagram.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
@@ -115,6 +126,9 @@
     <Compile Include="Models\SortConfiguration.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Controller\Packages.cs" />
+    <Compile Include="profitDiagram.xaml.cs">
+      <DependentUpon>profitDiagram.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SignUp.xaml.cs">
       <DependentUpon>SignUp.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -129,7 +143,9 @@
     </Compile>
     <Page Include="AdminWindow.xaml" />
     <Page Include="Card.xaml" />
+    <Page Include="LifiChartDiagram.xaml" />
     <Page Include="MainWindow.xaml" />
+    <Page Include="profitDiagram.xaml" />
     <Page Include="SignUp.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

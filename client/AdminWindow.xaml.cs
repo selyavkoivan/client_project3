@@ -373,5 +373,24 @@ namespace client
             Packages.Send(Stream, Commands.FilterGoods.GetString() + filter);
             GGrid.ItemsSource = JsonSerializer.Deserialize<List<Product>>(Packages.Recv(Stream));
         }
+
+        private void Analytics_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Packages.Send(Stream, Commands.ShowOrders.GetString());
+            OGrid.ItemsSource = JsonSerializer.Deserialize<List<Order>>(Packages.Recv(Stream));
+
+        }
+
+        private void TypeButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Packages.Send(Stream, Commands.ShowOrders.GetString());
+            new LifiChartDiagram(JsonSerializer.Deserialize<List<Order>>(Packages.Recv(Stream))).ShowDialog();
+        }
+
+        private void ProfitButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Packages.Send(Stream, Commands.ShowOrders.GetString());
+            new profitDiagram(JsonSerializer.Deserialize<List<Order>>(Packages.Recv(Stream))).ShowDialog();
+        }
     }
 }

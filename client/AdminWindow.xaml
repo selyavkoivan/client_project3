@@ -212,6 +212,48 @@
             </StackPanel>
 
         </TabItem>
+        <TabItem>
+            <TabItem.Header>
+                <Label Content="Аналитика"
+                       Name="Analytics"
+                      MouseLeftButtonDown="Analytics_OnMouseLeftButtonDown"
+                       HorizontalAlignment="Stretch" />
+            </TabItem.Header>
+        
+            <StackPanel>
+                <Border Padding="30">
+                    <DataGrid AutoGenerateColumns="False"
+                              Height="500"
+                              HorizontalAlignment="Left"
+                              Name="OGrid"
+                              VerticalAlignment="Top"
+                              Width="840"
+                              HeadersVisibility="Column"
+                              CanUserResizeColumns="False"
+                              SelectionMode="Single"
+                              IsReadOnly="true"
+                              ItemsSource="{Binding Path=Order}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Логин заказчика" Binding="{Binding Path=user.login}" Width="200" />
+                            <DataGridTextColumn Header="Продукт" Binding="{Binding Path=product.name}" Width="200" />
+                            <DataGridTextColumn Header="Количество" Binding="{Binding Path=count}" Width="50" />
+                            <DataGridTextColumn Header="Дата"
+                                                Binding="{Binding Path=date, StringFormat={}{0:dd/MM/yyyy}}"
+                                                Width="100" />
+                            <DataGridTextColumn Header="Доставка" Binding="{Binding Path=deliveryAddress}" Width="200" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Border>
+
+                <Grid>
+                    <StackPanel Orientation="Horizontal">
+                    <Button Content="Типы продукции" Name="typeButton" Click="TypeButton_OnClick"/>
+                <Button Content="Прибыль" Name="profitButton" Click="ProfitButton_OnClick"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+
+        </TabItem>
         <TabItem Name="Product" Visibility="Hidden">
             <ScrollViewer>
                 <Grid Margin="20" Name="PrGrid">
