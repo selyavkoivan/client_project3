@@ -183,7 +183,7 @@
             </StackPanel>
 
         </TabItem>
-        <TabItem Name="Product">
+        <TabItem Name="Product" Visibility="Hidden">
             <ScrollViewer>
                 <Grid Margin="20" Name="PrGrid">
                     <Grid.RowDefinitions>
@@ -289,7 +289,7 @@
                 </Grid>
             </ScrollViewer>
         </TabItem>
-        <TabItem Name="EditProductTabItem">
+        <TabItem Name="EditProductTabItem"  Visibility="Hidden">
             <ScrollViewer>
                 <Grid Margin="20" Name="EditPrGrid">
                     <Grid.RowDefinitions>
@@ -381,7 +381,7 @@
                 </Grid>
             </ScrollViewer>
         </TabItem>
-        <TabItem Name="UserAccount">
+        <TabItem Name="UserAccount"  Visibility="Hidden">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="300" />

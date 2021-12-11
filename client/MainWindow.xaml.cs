@@ -62,11 +62,12 @@ namespace client
             }
             else if (answerArray[0] == Role.User.GetString())
             {
-                MessageBox.Show("hello user");
+                new UserWindow(Stream, JsonSerializer.Deserialize<User>(answerArray[1])).Show();
+                Hide();
             }
             else
             {
-                MessageBox.Show("Неверно введен логин или пароль");
+                MessageBox.Show("Неверно введен логин или пароль\nВозможно вы заблокированы");
                 InputTextBoxPassword.BorderBrush = Brushes.Red;
                 InputTextBoxLogin.BorderBrush = Brushes.Red;
             }

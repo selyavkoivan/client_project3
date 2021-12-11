@@ -98,6 +98,8 @@ namespace client
         {
             Packages.Send(Stream, Commands.ShowAdmin.GetString() + admin);
             FillAdminData(JsonSerializer.Deserialize<Admin>(Packages.Recv(Stream)));
+            Packages.Send(Stream, Commands.ShowUserOrders.GetString() + admin);
+            FillOrderTable(JsonSerializer.Deserialize<List<Order>>(Packages.Recv(Stream)));
         }
 
 
@@ -180,7 +182,7 @@ namespace client
                 if (count <= 0) throw new Exception();
                 var product = (Product)GGrid.SelectedItem;
                 product.sizes = new List<Size> { (Size)SizesDataGrid.SelectedItem };
-                if(product.sizes.Count == 0) throw new Exception();
+                if (product.sizes[0] == null) throw new Exception();
                 var order = DeliveryAddress.Text == string.Empty ? 
                     new Order(admin, product, count, DateTime.Now) : 
                     new Order(admin, product, count, DateTime.Now, DeliveryAddress.Text);  

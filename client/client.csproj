@@ -118,6 +118,9 @@
       <DependentUpon>SignUp.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UserWindow.xaml.cs">
+      <DependentUpon>UserWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -131,6 +134,7 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Styles\Resource.xaml" />
+    <Page Include="UserWindow.xaml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

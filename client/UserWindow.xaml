@@ -1,0 +1,226 @@
+﻿<Window x:Class="client.UserWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:client"
+        mc:Ignorable="d"
+        Title="UserMainPage" Height="700" Width="900">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles/Resource.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <TabControl Name="UserTabControl">
+        <TabItem>
+            <TabItem.Header>
+                <Label Content="Личный кабинет"
+                       Name="Account"
+                       MouseLeftButtonDown="Account_OnMouseLeftButtonDown"
+                       HorizontalAlignment="Stretch" />
+            </TabItem.Header>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300" />
+                    <ColumnDefinition Width="600" />
+                </Grid.ColumnDefinitions>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="300" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Border VerticalAlignment="Center" HorizontalAlignment="Center" Width="250"
+                            Height="250" BorderBrush="Gray" BorderThickness="1" CornerRadius="125" />
+                    <Canvas Grid.Row="1">
+                        <StackPanel Width="300">
+                            <Border Padding="30 0">
+                                <TextBlock Text="Логин" />
+                            </Border>
+                            <TextBox GotKeyboardFocus="Login_OnGotKeyboardFocus" Name="Login" />
+                            <Border Padding="30 0">
+                                <TextBlock Text="Имя" />
+                            </Border>
+                            <TextBox Name="Name" />
+                            <Border HorizontalAlignment="Center" VerticalAlignment="Top">
+                                <Button Click="ButtonBase_OnClick" Content="изменить" />
+                            </Border>
+                            <Border HorizontalAlignment="Center" VerticalAlignment="Top">
+                                <Button Name="ShowCard" Content="Карта" Click="ShowCard_OnClick" />
+                            </Border>
+
+                        </StackPanel>
+
+
+                    </Canvas>
+                </Grid>
+                <Grid Grid.Column="1">
+                    <DataGrid AutoGenerateColumns="False"
+                              Height="550"
+                              HorizontalAlignment="Left"
+                              Name="UserOrderGrid"
+                              VerticalAlignment="Top"
+                              Width="550"
+                              HeadersVisibility="Column"
+                              CanUserResizeColumns="False"
+                              SelectionMode="Single"
+                              IsReadOnly="true"
+                              ItemsSource="{Binding Path=Order}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Продукт" Binding="{Binding Path=product.name}" Width="200" />
+                            <DataGridTextColumn Header="Количество" Binding="{Binding Path=count}" Width="50" />
+                            <DataGridTextColumn Header="Дата"
+                                                Binding="{Binding Path=date, StringFormat={}{0:dd/MM/yyyy}}"
+                                                Width="100" />
+                            <DataGridTextColumn Header="Доставка" Binding="{Binding Path=deliveryAddress}" Width="200" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                </Grid>
+            </Grid>
+        </TabItem>
+        <TabItem>
+            <TabItem.Header>
+                <Label Content="Товары"
+                       Name="Goods"
+                       MouseLeftButtonDown="Goods_OnMouseLeftButtonDown"
+                       HorizontalAlignment="Stretch" />
+            </TabItem.Header>
+            <StackPanel>
+                <Border Padding="30">
+                    <DataGrid AutoGenerateColumns="False"
+                              Height="500"
+                              HorizontalAlignment="Left"
+                              Name="GGrid"
+                              VerticalAlignment="Top"
+                              Width="840"
+                              HeadersVisibility="Column"
+                              CanUserResizeColumns="False"
+                              SelectionMode="Single"
+                              IsReadOnly="true"
+                              ItemsSource="{Binding Path=CalculatedProduct}"
+                              MouseDoubleClick="GGrid_OnMouseDoubleClick">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Название" Binding="{Binding Path=name}" Width="260" />
+                            <DataGridTextColumn Header="Цена" Binding="{Binding Path=price}" Width="160" />
+                            <DataGridTextColumn Header="Материал" Binding="{Binding Path=material}" Width="260" />
+                            <DataGridTextColumn Header="Количество в наличии" Binding="{Binding Count}"
+                                                Width="160" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Border>
+            </StackPanel>
+
+        </TabItem>
+        <TabItem  Visibility="Hidden" Name="Product">
+            <ScrollViewer>
+                <Grid Margin="20" Name="PrGrid">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="150" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="1" CornerRadius="75" />
+                        <Canvas Grid.Column="1" Margin="20">
+                            <TextBlock Width="750" TextWrapping="Wrap"
+                                       Name="NameProductBlock"
+                                       FontSize="30" FontWeight="Medium" />
+                        </Canvas>
+                    </Grid>
+                    <Grid Grid.Row="1" Margin="0 10 0 0">
+                        <StackPanel>
+                            <TextBlock Width="850" TextWrapping="Wrap"
+                                       Name="DescriptionProductBlock" FontSize="18" FontWeight="Thin" />
+                            <DataGrid Name="PrDataGrid"
+                                      HorizontalAlignment="Left"
+                                      HorizontalScrollBarVisibility="Hidden"
+                                      VerticalScrollBarVisibility="Hidden"
+                                      HeadersVisibility="Column"
+                                      CanUserResizeColumns="False"
+                                      SelectionMode="Single"
+                                      ItemsSource="{Binding Path=Product}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Узор" Binding="{Binding Path=pattern}" />
+                                    <DataGridTextColumn Header="Цвет" Binding="{Binding Path=color}" />
+                                    <DataGridTextColumn Header="Материал" Binding="{Binding Path=material}" />
+                                    <DataGridTextColumn Header="Цена" Binding="{Binding Path=price}" />
+                                    <DataGridTextColumn Header="Тип" Binding="{Binding Path=type}" />
+                                </DataGrid.Columns>
+                                <DataGrid.ColumnHeaderStyle>
+                                    <Style TargetType="{x:Type DataGridColumnHeader}">
+                                        <Setter Property="LayoutTransform">
+                                            <Setter.Value>
+                                                <TransformGroup>
+                                                    <RotateTransform Angle="90" />
+                                                </TransformGroup>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </DataGrid.ColumnHeaderStyle>
+                                <DataGrid.LayoutTransform>
+                                    <TransformGroup>
+                                        <RotateTransform Angle="-90" />
+                                    </TransformGroup>
+                                </DataGrid.LayoutTransform>
+                                <DataGrid.CellStyle>
+                                    <Style TargetType="DataGridCell">
+                                        <Setter Property="LayoutTransform">
+                                            <Setter.Value>
+                                                <TransformGroup>
+                                                    <RotateTransform Angle="90" />
+                                                </TransformGroup>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </DataGrid.CellStyle>
+                            </DataGrid>
+                            <TextBlock FontSize="18" FontWeight="Thin" Text="Размеры в наличии" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="300" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <DataGrid Grid.Column="0" AutoGenerateColumns="False"
+                                          HorizontalAlignment="Left"
+                                          Name="SizesDataGrid"
+                                          HeadersVisibility="Column"
+                                          SelectionMode="Single"
+                                          CanUserAddRows="False"
+                                          ItemsSource="{Binding Path=Size}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn IsReadOnly="True" Header="Размер"
+                                                            Binding="{Binding Path=size}" />
+                                        <DataGridTextColumn IsReadOnly="True" Header="Количество"
+                                                            Binding="{Binding Path=count}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                                <Canvas Grid.Column="1">
+                                    <StackPanel>
+                                        <Border Padding="30 0">
+                                            <TextBlock Text="Адрес доставки (не обязательно)" />
+                                        </Border>
+                                        <TextBox Name="DeliveryAddress" />
+                                        <Border Padding="30 0">
+                                            <TextBlock Text="Выберите количество" />
+                                        </Border>
+                                        <TextBox Name="CountOfProduct" />
+                                        <Button Click="CreateOrder_OnClick" Name="CreateOrder" Content="Заказать" />
+                                    </StackPanel>
+
+                                </Canvas>
+                            </Grid>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </ScrollViewer>
+        </TabItem>
+    </TabControl>
+</Window>

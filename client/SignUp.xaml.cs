@@ -24,7 +24,7 @@ namespace client
         }
         protected override void OnClosing(CancelEventArgs e)
         {
-            Application.Current.Shutdown();
+            new MainWindow(Stream).Show();
         }
 
         private Byte[] Data;
@@ -50,7 +50,7 @@ namespace client
                 name = InputTextBoxName.Text
             };
             Packages.Send(Stream, message);
-            if (Packages.Recv(Stream) == "0")
+            if (Packages.Recv(Stream) == Answer.Error.GetString())
             {
                 InputTextBoxLogin.BorderBrush = Brushes.Red;
                 MessageBox.Show("Введенный логин уже занят");
@@ -59,7 +59,6 @@ namespace client
             {
                 MessageBox.Show("Регистрация прошла успешно");
                 Close();
-                new MainWindow(Stream).Show();
             }
         }
 
@@ -79,7 +78,6 @@ namespace client
         private void ToSignIn_OnClick(object sender, RoutedEventArgs e)
         {
             Close();
-            new MainWindow(Stream).Show();
         }
     }
 }
