@@ -120,14 +120,14 @@ namespace client
             {
                 if (user.card == null || user.card.PaymentCardId == 0) new Card(user, Stream).ShowDialog();
                 var count = int.Parse(CountOfProduct.Text);
-                if (count <= 0) throw new Exception();
+                if (count <= 0 || deliveryDate.SelectedDate < DateTime.Now.AddDays(1)) throw new Exception();
                 var product = (Product)GGrid.SelectedItem;
                 product.sizes = new List<Size> { (Size)SizesDataGrid.SelectedItem };
                 if (product.sizes[0] == null) throw new Exception();
-                var order = DeliveryAddress.Text == string.Empty ? 
-                    new Order(user, product, count, DateTime.Now) : 
-                    new Order(user, product, count, DateTime.Now, DeliveryAddress.Text);
-                
+                var order = DeliveryAddress.Text == string.Empty
+                    ? new Order(user, product, count, DateTime.Now, deliveryDate.SelectedDate == null ? DateTime.Now.AddDays(3) : deliveryDate.SelectedDate.Value, 0)
+                    : new Order(user, product, count, DateTime.Now, DeliveryAddress.Text, deliveryDate.SelectedDate == null ? DateTime.Now.AddDays(3) : deliveryDate.SelectedDate.Value, 0);
+
                 Packages.Send(Stream, Commands.AddOrder.GetString() + order);
                 if (Packages.Recv(Stream) == Answer.Success.GetString())
                 {
@@ -139,7 +139,7 @@ namespace client
             }
             catch (Exception)
             {
-                MessageBox.Show("Неверный ввод количества или не выбран размер");
+                MessageBox.Show("Неверный введены данные или не выбран размер");
             }
         }
          string getOrdersFilter(string filter)
@@ -186,6 +186,58 @@ namespace client
                 GoodsFilter.Text);
             Packages.Send(Stream, Commands.FilterGoods.GetString() + filter);
             GGrid.ItemsSource = JsonSerializer.Deserialize<List<Product>>(Packages.Recv(Stream));
+        }
+
+      private void SubmitMyOrder_OnClick(object sender, RoutedEventArgs e)
+        {
+            var order = PrMyOrderDataGrid.Items[0] as Order;
+            order.orderStatus = 3;
+            Packages.Send(Stream, Commands.EditDeliveryStatus.GetString() + order);
+            FillProductDataGrid(order);
+            
+        }
+        private void SelectMyOrderTabControl(Order order)
+        {
+            Dispatcher.BeginInvoke((Action)(() => UserTabControl.SelectedItem = MyOrderTabItem));
+            FillProductDataGrid(order);
+        }
+
+        void FillProductDataGrid(Order order)
+        {
+            PrMyOrderDataGrid.Items.Clear();
+            PrMyOrderDataGrid.Items.Add(order);
+            NameProductMyOrderBlock.Text = order.product.name;
+            DescriptionMyOrderProductBlock.Text = order.product.description;
+            SizeMyOrder.Text = order.product.sizes[0].size;
+            CountMyOrder.Text = order.count.ToString();
+            MyOrderDate.Text = order.date.ToLongDateString();
+            MyOrderDeliveryDate.Text = order.deliveryDate.ToLongDateString();
+            if (order.delivery)
+            {
+                MyOrderDeliveryAddress.Text = order.deliveryAddress;
+            }
+            else MyOrderDeliveryAddress.Text = "адрес не выбран";
+            MyOrderDeliveryStatus.Text = getStatus(order.orderStatus);
+            if (order.orderStatus == 3) SubmitMyOrder.Visibility= Visibility.Hidden;
+            else SubmitMyOrder.Visibility= Visibility.Visible;
+        }
+
+        private string getStatus(int status)
+        {
+            switch (status)
+            {
+                case 0: return "Подготовка к отправке";
+                case 1: return "Отправлен";
+                case 2: return "В пункте выдачи";
+                case 3: return "Получен";
+            }
+
+            return "Ошибка";
+        }
+        private void UserOrderGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var order = (Order)UserOrderGrid.SelectedItem;
+            if(order != null) SelectMyOrderTabControl(order);
         }
     }
 }

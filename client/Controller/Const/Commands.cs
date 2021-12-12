@@ -26,7 +26,8 @@
         ShowUser,
         FilterUserOrders,
         FilterGoods,
-        FIlterUsers
+        FIlterUsers,
+        EditDeliveryStatus
     }
 
     public static class CommandsExtensions
@@ -60,6 +61,7 @@
                 case Commands.FilterGoods: return "fgs";
                 case Commands.FilterUserOrders: return "fuo";
                 case Commands.FIlterUsers: return "fus";
+                case Commands.EditDeliveryStatus: return "eds";
                 default: return "err";
             }
         }

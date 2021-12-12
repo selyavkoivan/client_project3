@@ -78,6 +78,7 @@
                               CanUserResizeColumns="False"
                               SelectionMode="Single"
                               IsReadOnly="true"
+                              MouseDoubleClick="UserOrderGrid_OnMouseDoubleClick"
                               ItemsSource="{Binding Path=Order}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Продукт" Binding="{Binding Path=product.name}" Width="200" />
@@ -228,6 +229,10 @@
                                             <TextBlock Text="Адрес доставки (не обязательно)" />
                                         </Border>
                                         <TextBox Name="DeliveryAddress" />
+                                        <Border >
+                                            <TextBlock TextWrapping="Wrap" Width="230" Text="Предпочитаемое время доставки (при не указании будет доставлено в течении трех дней)" />
+                                        </Border>
+                                        <DatePicker Name="deliveryDate" />
                                         <Border Padding="30 0">
                                             <TextBlock Text="Выберите количество" />
                                         </Border>
@@ -241,6 +246,112 @@
                     </Grid>
                 </Grid>
             </ScrollViewer>
+        </TabItem>
+        <TabItem Name="MyOrderTabItem" Visibility="Hidden">
+            <ScrollViewer>
+                <Grid Margin="20" Name="PrMyOrderGrid">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="150" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="1" CornerRadius="75" />
+                        <Canvas Grid.Column="1" Margin="20">
+                            <TextBlock Width="750" TextWrapping="Wrap"
+                                       Name="NameProductMyOrderBlock"
+                                       FontSize="30" FontWeight="Medium" />
+                        </Canvas>
+                    </Grid>
+                    <Grid Grid.Row="1" Margin="0 10 0 0">
+                        <StackPanel>
+                            <TextBlock Width="850" TextWrapping="Wrap"
+                                       Name="DescriptionMyOrderProductBlock" FontSize="18" FontWeight="Thin" />
+                            <DataGrid Name="PrMyOrderDataGrid"
+                                      
+                                      HorizontalAlignment="Left"
+                                      HorizontalScrollBarVisibility="Hidden"
+                                      VerticalScrollBarVisibility="Hidden"
+                                      HeadersVisibility="Column"
+                                      CanUserResizeColumns="False"
+                                      SelectionMode="Single"
+                                      ItemsSource="{Binding Path=Order}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Узор" Binding="{Binding Path=product.pattern}" />
+                                    <DataGridTextColumn Header="Цвет" Binding="{Binding Path=product.color}" />
+                                    <DataGridTextColumn Header="Материал" Binding="{Binding Path=product.material}" />
+                                    <DataGridTextColumn Header="Цена" Binding="{Binding Path=product.price}" />
+                                    <DataGridTextColumn Header="Тип" Binding="{Binding Path=product.type}" />
+                                </DataGrid.Columns>
+                                <DataGrid.ColumnHeaderStyle>
+                                    <Style TargetType="{x:Type DataGridColumnHeader}">
+                                        <Setter Property="LayoutTransform">
+                                            <Setter.Value>
+                                                <TransformGroup>
+                                                    <RotateTransform Angle="90" />
+                                                </TransformGroup>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </DataGrid.ColumnHeaderStyle>
+                                <DataGrid.LayoutTransform>
+                                    <TransformGroup>
+                                        <RotateTransform Angle="-90" />
+                                    </TransformGroup>
+                                </DataGrid.LayoutTransform>
+                                <DataGrid.CellStyle>
+                                    <Style TargetType="DataGridCell">
+                                        <Setter Property="LayoutTransform">
+                                            <Setter.Value>
+                                                <TransformGroup>
+                                                    <RotateTransform Angle="90" />
+                                                </TransformGroup>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </DataGrid.CellStyle>
+                            </DataGrid>
+                            <TextBlock FontSize="18" FontWeight="Thin" Text="Данные заказа" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="300" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <Border Padding="30 0">
+                                        <TextBlock Text="Размер" />
+                                    </Border>
+                                    <TextBlock FontWeight="Thin" Name="SizeMyOrder" />
+                                    <Border Padding="30 0">
+                                        <TextBlock Text="Количество" />
+                                    </Border>
+                                    <TextBlock FontWeight="Thin" Name="CountMyOrder" />
+                                    <Border Padding="30 0">
+                                        <TextBlock Text="Дата заказа" />
+                                    </Border>
+                                    <TextBlock FontWeight="Thin" Name="MyOrderDate" />
+                                    <Border Padding="30 0">
+                                        <TextBlock Text="Дата получения" />
+                                    </Border>
+                                    <TextBlock FontWeight="Thin" Name="MyOrderDeliveryDate" />
+                                    <Border Padding="30 0">
+                                        <TextBlock Text="Адрес доставки" />
+                                    </Border>
+                                    <TextBlock FontWeight="Thin" Name="MyOrderDeliveryAddress" />
+                                    <Border Padding="30 0">
+                                        <TextBlock Text="Статус заказа" />
+                                    </Border>
+                                    <TextBlock FontWeight="Thin" Name="MyOrderDeliveryStatus" />
+                                    <Button Name="SubmitMyOrder" Content="Подтвердить получение" Click="SubmitMyOrder_OnClick"/>
+                                </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </ScrollViewer>
         </TabItem>
     </TabControl>
 </Window>

@@ -15,15 +15,32 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
-        <StackPanel Width="200">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="200" />
+            <RowDefinition />
+            </Grid.RowDefinitions>
+            <StackPanel Width="200">
             <TextBlock Text="Начало Периода"/>
             <DatePicker Name="start" />
             <TextBlock Text="Конец Периода"/>
             <DatePicker Name="End" />
             <Button Click="Sunmit_OnClick" Name="Sunmit" Content="Рассчитать" />
         </StackPanel>
-        <wpf:PieChart Name="pieChart1" LegendLocation="Bottom" Hoverable="False"
-                      DataTooltip="{x:Null}" Height="450" VerticalAlignment="Bottom"/>
-       
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="400" />
+                <ColumnDefinition Width="400" />
+            </Grid.ColumnDefinitions>    
+            <Grid >
+            <TextBlock HorizontalAlignment="Center" Text="Прибыль"/>
+                <wpf:PieChart Name="price" LegendLocation="Bottom"
+                              Height="350" Width="350"/>
+            </Grid>
+            <Grid Grid.Column="1" >
+                <TextBlock  HorizontalAlignment="Center" Text="Количество"/>
+                <wpf:PieChart Name="pieChart1" LegendLocation="Bottom"
+                              Height="350" Width="350"/>
+            </Grid>
+        </Grid>
     </Grid>
 </Window>

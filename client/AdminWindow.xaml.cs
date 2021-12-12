@@ -97,6 +97,11 @@ namespace client
 
         private void Account_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            FillAccount();
+        }
+
+        void FillAccount()
+        {
             Packages.Send(Stream, Commands.ShowAdmin.GetString() + admin);
             FillAdminData(JsonSerializer.Deserialize<Admin>(Packages.Recv(Stream)));
             Packages.Send(Stream, Commands.ShowUserOrders.GetString() + admin);
@@ -178,13 +183,13 @@ namespace client
             {
                 if (admin.card == null || admin.card.PaymentCardId == 0) new Card(admin, Stream).ShowDialog();
                 var count = int.Parse(CountOfProduct.Text);
-                if (count <= 0) throw new Exception();
+                if (count <= 0 || deliveryDate.SelectedDate < DateTime.Now.AddDays(1)) throw new Exception();
                 var product = (Product)GGrid.SelectedItem;
                 product.sizes = new List<Size> { (Size)SizesDataGrid.SelectedItem };
                 if (product.sizes[0] == null) throw new Exception();
                 var order = DeliveryAddress.Text == string.Empty
-                    ? new Order(admin, product, count, DateTime.Now)
-                    : new Order(admin, product, count, DateTime.Now, DeliveryAddress.Text);
+                    ? new Order(admin, product, count, DateTime.Now, deliveryDate.SelectedDate == null ? DateTime.Now.AddDays(3) : deliveryDate.SelectedDate.Value, 0)
+                    : new Order(admin, product, count, DateTime.Now, DeliveryAddress.Text, deliveryDate.SelectedDate == null ? DateTime.Now.AddDays(3) : deliveryDate.SelectedDate.Value, 0);
                 Packages.Send(Stream, Commands.AddOrder.GetString() + order);
                 if (Packages.Recv(Stream) == Answer.Success.GetString())
                 {
@@ -196,7 +201,7 @@ namespace client
             }
             catch (Exception)
             {
-                MessageBox.Show("Неверный ввод количества или не выбран размер");
+                MessageBox.Show("Неверный введены данные или не выбран размер");
             }
         }
 
@@ -270,8 +275,11 @@ namespace client
         private void UserGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var user = UGrid.SelectedItem as User;
-            FillUserData(user);
-            ShowUserTabControl();
+            if (user != null)
+            {
+                FillUserData(user);
+                ShowUserTabControl();
+            }
         }
 
         private void FillUserData(User user)
@@ -282,7 +290,11 @@ namespace client
             Packages.Send(Stream, Commands.ShowUserOrders.GetString() + user);
             SelectedUserOrderGrid.ItemsSource = JsonSerializer.Deserialize<List<Order>>(Packages.Recv(Stream));
         }
-
+        private void ShowMyAccountTabControl()
+        {
+            Dispatcher.BeginInvoke((Action)(() => AdminTabControl.SelectedItem = Account));
+            FillAccount();
+        }
         private void ShowUserTabControl()
         {
             Dispatcher.BeginInvoke((Action)(() => AdminTabControl.SelectedItem = UserAccount));
@@ -391,6 +403,135 @@ namespace client
         {
             Packages.Send(Stream, Commands.ShowOrders.GetString());
             new profitDiagram(JsonSerializer.Deserialize<List<Order>>(Packages.Recv(Stream))).ShowDialog();
+        }
+
+        private void SubmitMyOrder_OnClick(object sender, RoutedEventArgs e)
+        {
+            var order = PrMyOrderDataGrid.Items[0] as Order;
+            order.orderStatus = 3;
+            Packages.Send(Stream, Commands.EditDeliveryStatus.GetString() + order);
+            FillMyOrderDataGrid(order);
+            
+        }
+        private void SelectMyOrderTabControl(Order order)
+        {
+            Dispatcher.BeginInvoke((Action)(() => AdminTabControl.SelectedItem = MyOrderTabItem));
+            FillMyOrderDataGrid(order);
+        }
+
+        void FillMyOrderDataGrid(Order order)
+        {
+            PrMyOrderDataGrid.Items.Clear();
+            PrMyOrderDataGrid.Items.Add(order);
+            NameProductMyOrderBlock.Text = order.product.name;
+            DescriptionMyOrderProductBlock.Text = order.product.description;
+            SizeMyOrder.Text = order.product.sizes[0].size;
+            CountMyOrder.Text = order.count.ToString();
+            MyOrderDate.Text = order.date.ToLongDateString();
+            MyOrderDeliveryDate.Text = order.deliveryDate.ToLongDateString();
+            if (order.delivery)
+            {
+                MyOrderDeliveryAddress.Text = order.deliveryAddress;
+            }
+            else MyOrderDeliveryAddress.Text = "адрес не выбран";
+            MyOrderDeliveryStatus.Text = getStatus(order.orderStatus);
+            if (order.orderStatus == 3) SubmitMyOrder.Visibility= Visibility.Hidden;
+            else SubmitMyOrder.Visibility= Visibility.Visible;
+        }
+
+        private string getStatus(int status)
+        {
+            switch (status)
+            {
+                case 0: return "Подготовка к отправке";
+                case 1: return "Отправлен";
+                case 2: return "В пункте выдачи";
+                case 3: return "Получен";
+            }
+
+            return "Ошибка";
+        }
+        private void UserOrderGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var order = (Order)UserOrderGrid.SelectedItem;
+            if(order != null) SelectMyOrderTabControl(order);
+        }
+
+        private void SubmitUserOrder_OnClick(object sender, RoutedEventArgs e)
+        {
+            var order = PrUserOrderDataGrid.Items[0] as Order;
+            if (wait.IsChecked == true) order.orderStatus = 0;
+            else if (send.IsChecked == true) order.orderStatus = 1;
+            else if (ready.IsChecked == true) order.orderStatus = 2;
+            else if (received.IsChecked == true) order.orderStatus = 3;
+            Packages.Send(Stream, Commands.EditDeliveryStatus.GetString() + order);
+            FillUserOrderDataGrid(order);
+        }
+        private void SelectUserOrderTabControl(Order order)
+        {
+            Dispatcher.BeginInvoke((Action)(() => AdminTabControl.SelectedItem = UserOrderTabItem));
+            FillUserOrderDataGrid(order);
+        }
+
+        void FillUserOrderDataGrid(Order order)
+        {
+            PrUserOrderDataGrid.Items.Clear();
+            PrUserOrderDataGrid.Items.Add(order);
+            NameProductUserOrderBlock.Text = order.product.name;
+            DescriptionUserOrderProductBlock.Text = order.product.description;
+            SizeUserOrder.Text = order.product.sizes[0].size;
+            CountUserOrder.Text = order.count.ToString();
+            UserOrderDate.Text = order.date.ToLongDateString();
+            UserOrderDeliveryDate.Text = order.deliveryDate.ToLongDateString();
+            if (order.delivery)
+            {
+                UserOrderDeliveryAddress.Text = order.deliveryAddress;
+                ready.Visibility = Visibility.Hidden;
+                received.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                UserOrderDeliveryAddress.Text = "адрес не выбран";
+                ready.Visibility = Visibility.Visible;
+                received.Visibility = Visibility.Hidden;
+            }
+
+            if (order.orderStatus == 3)
+            {
+                UserOrderIsDelivered.Visibility = Visibility.Visible;
+                SubmitUserOrder.Visibility= Visibility.Hidden;
+                wait.Visibility = Visibility.Hidden;
+                send.Visibility = Visibility.Hidden;
+                ready.Visibility = Visibility.Hidden;
+                received.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                SubmitUserOrder.Visibility= Visibility.Visible;
+                UserOrderIsDelivered.Visibility = Visibility.Hidden;
+                switch (order.orderStatus)
+                {
+                    case 0:
+                        wait.IsChecked = true;
+                        break;
+                    case 1:
+                        send.IsChecked = true;
+                        break;
+                    case 2:
+                        ready.IsChecked = true;
+                        break;
+                    default:
+                        wait.IsChecked = true;
+                        break;
+                }
+            }
+            
+        }
+
+        private void OGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var order = OGrid.SelectedItem as Order;
+            SelectUserOrderTabControl(order);
         }
     }
 }

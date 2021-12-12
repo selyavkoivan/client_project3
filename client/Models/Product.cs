@@ -14,6 +14,7 @@ namespace client.Models
         public string description { get; set; }
         public double price { get; set; }
         public string type { get; set; }
+        public int popularity { get; set; }
         public List<Size> sizes { get; set; }
 
         public Product()
