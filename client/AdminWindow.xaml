@@ -56,7 +56,10 @@
                             <Border HorizontalAlignment="Center" VerticalAlignment="Top">
                                 <Button Name="ShowCard" Content="Карта" Click="ShowCard_OnClick" />
                             </Border>
-
+                            <Border HorizontalAlignment="Center" VerticalAlignment="Top">
+                                <Button Name="Exit" Content="Выход" Click="Exit_OnClick
+                                " />
+                            </Border>
                         </StackPanel>
 
 
@@ -187,7 +190,7 @@
                               CanUserResizeColumns="False"
                               SelectionMode="Single"
                               IsReadOnly="true"
-                              ItemsSource="{Binding Path=CalculatedProduct}"
+                              ItemsSource="{Binding Path=ProductAvRate}"
                               MouseDoubleClick="GGrid_OnMouseDoubleClick">
                         <DataGrid.ContextMenu>
                             <ContextMenu>
@@ -198,13 +201,14 @@
                             </ContextMenu>
                         </DataGrid.ContextMenu>
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Название" Binding="{Binding Path=name}" Width="260" />
-                            <DataGridTextColumn Header="Цена" Binding="{Binding Path=price}" Width="140" />
-                            <DataGridTextColumn Header="Материал" Binding="{Binding Path=material}" Width="200" />
-                            <DataGridTextColumn Header="Количество в наличии" Binding="{Binding Count}"
+                            <DataGridTextColumn Header="Оценка" Binding="{Binding Path=averageRate}" Width="70" />
+                            <DataGridTextColumn Header="Название" Binding="{Binding Path=product.name}" Width="260" />
+                            <DataGridTextColumn Header="Цена" Binding="{Binding Path=product.price}" Width="70" />
+                            <DataGridTextColumn Header="Материал" Binding="{Binding Path=product.material}" Width="200" />
+                            <DataGridTextColumn Header="Количество в наличии" Binding="{Binding product.Count}"
                                                 Width="160" />
-                            <DataGridTextColumn Header="Куплено" Binding="{Binding popularity}"
-                                                Width="160" />
+                            <DataGridTextColumn Header="Куплено" Binding="{Binding product.popularity}"
+                                                Width="70" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </Border>
@@ -217,7 +221,7 @@
         </TabItem>
         <TabItem>
             <TabItem.Header>
-                <Label Content="Аналитика"
+                <Label Content="Заказы"
                        Name="Analytics"
                       MouseLeftButtonDown="Analytics_OnMouseLeftButtonDown"
                        HorizontalAlignment="Stretch" />
@@ -245,6 +249,7 @@
                                                 Binding="{Binding Path=date, StringFormat={}{0:dd/MM/yyyy}}"
                                                 Width="100" />
                             <DataGridTextColumn Header="Доставка" Binding="{Binding Path=deliveryAddress}" Width="200" />
+                            <DataGridTextColumn Header="Этап" Binding="{Binding Path=orderStatus}" Width="50" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </Border>
@@ -258,7 +263,18 @@
             </StackPanel>
 
         </TabItem>
-        <TabItem Name="Product" Visibility="Hidden" >
+        <TabItem>
+            <TabItem.Header>
+                <Label Content="О нас"
+                       Name="AboutUs"/>
+            </TabItem.Header>
+            <StackPanel>
+                <TextBlock Text="Обратная связь : "/>
+                <TextBlock Text="Телефон : +375257691966"/>
+                <TextBlock Text="Почта : fanfictionteamof@gmail.com"/>
+            </StackPanel>
+        </TabItem>
+        <TabItem Name="Product" Visibility="Hidden"  >
             <ScrollViewer>
                 <Grid Margin="20" Name="PrGrid">
                     <Grid.RowDefinitions>
@@ -271,11 +287,24 @@
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="1" CornerRadius="75" />
-                        <Canvas Grid.Column="1" Margin="20">
+                        <StackPanel Grid.Column="1" Margin="20">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Средняя оценка : "/> 
+                                <TextBlock FontWeight="Thin" Name="averageRate"/>
+                                    </StackPanel>
+                            <StackPanel  Name="RateStackPanel" Orientation="Horizontal">
+                                <RadioButton GroupName="rate" Content="1" Name="one" />
+                                <RadioButton GroupName="rate" Content="2" Name="two" />
+                                <RadioButton GroupName="rate" Content="3" Name="three" />
+                                <RadioButton GroupName="rate" Content="4" Name="four" />
+                                <RadioButton GroupName="rate" Content="5" Name="five" />
+
+                            </StackPanel>
+                            <Button HorizontalAlignment="Left" Width="200" Content="Оценить" Name="SetRate" Click="SetRate_OnClick"/>
                             <TextBlock Width="750" TextWrapping="Wrap"
                                        Name="NameProductBlock"
                                        FontSize="30" FontWeight="Medium" />
-                        </Canvas>
+                        </StackPanel>
                     </Grid>
                     <Grid Grid.Row="1" Margin="0 10 0 0">
                         <StackPanel>

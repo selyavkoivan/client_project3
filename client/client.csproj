@@ -122,6 +122,8 @@
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\PaymentCard.cs" />
     <Compile Include="Models\Product.cs" />
+    <Compile Include="Models\ProductAvRate.cs" />
+    <Compile Include="Models\Review.cs" />
     <Compile Include="Models\Size.cs" />
     <Compile Include="Models\SortConfiguration.cs" />
     <Compile Include="Models\User.cs" />

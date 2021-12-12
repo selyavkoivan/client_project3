@@ -27,9 +27,12 @@
         FilterUserOrders,
         FilterGoods,
         FIlterUsers,
-        EditDeliveryStatus
+        EditDeliveryStatus,
+        SetRate,
+        GetRates,
+        GetProductRates
     }
-
+  
     public static class CommandsExtensions
     {
         public static string GetString(this Commands command)
@@ -62,6 +65,9 @@
                 case Commands.FilterUserOrders: return "fuo";
                 case Commands.FIlterUsers: return "fus";
                 case Commands.EditDeliveryStatus: return "eds";
+                case Commands.SetRate: return "srt";
+                case Commands.GetRates: return "grs";
+                case Commands.GetProductRates: return "gpr";
                 default: return "err";
             }
         }

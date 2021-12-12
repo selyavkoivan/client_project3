@@ -35,7 +35,7 @@ namespace client
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            Application.Current.Shutdown();
+            new MainWindow(Stream).Show();
         }
 
         private void FillAdminData(Admin admin)
@@ -150,31 +150,77 @@ namespace client
         private void FillGoodsTable()
         {
             Packages.Send(Stream, Commands.ShowGoods.GetString());
-
             var goods = JsonSerializer.Deserialize<List<CalculatedProduct>>(Packages.Recv(Stream));
+            Packages.Send(Stream, Commands.GetRates.GetString());
+            var rates = JsonSerializer.Deserialize<List<Review>>(Packages.Recv(Stream));
+            List<ProductAvRate> avRGoods = new List<ProductAvRate>();
             goods.ForEach(p => p.SetCount());
-            GGrid.ItemsSource = goods;
+            goods.ForEach(p =>
+            {
+                if (rates.Count != 0)
+                {
+                    List<Review> productRates = new List<Review>();
+                    for (int i = 0; i < rates.Count; i++)
+                    {
+                        if (rates[i].product.productId == p.productId)
+                        {
+                            productRates.Add(rates[i]);
+                        }
+                    }
+
+                    
+                    if(productRates.Count == 0) avRGoods.Add(new ProductAvRate(p, null));
+                    else avRGoods.Add(new ProductAvRate(p, rates.FindAll(r => r.product.productId == p.productId)));
+                }
+                else avRGoods.Add(new ProductAvRate(p, null));
+            });
+
+            GGrid.ItemsSource = avRGoods;
+        }
+
+        private ProductAvRate GetProduct(Product product)
+        {
+            Packages.Send(Stream, Commands.ShowProduct.GetString() + product);
+            CalculatedProduct newProduct = JsonSerializer.Deserialize<CalculatedProduct>(Packages.Recv(Stream));
+            Packages.Send(Stream, Commands.GetProductRates.GetString() + product);
+            var rates = JsonSerializer.Deserialize<List<Review>>(Packages.Recv(Stream));
+            if (rates.Count != 0)
+                return new ProductAvRate(newProduct,
+                    rates.Where(r => r.product.productId == product.productId).ToList());
+            return new ProductAvRate(newProduct, null);
         }
 
         private void GGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            var product = (Product)GGrid.SelectedItem;
+            var product = (ProductAvRate)GGrid.SelectedItem;
             SelectProductTabControl(product);
         }
 
-        private void SelectProductTabControl(Product product)
+        private void SelectProductTabControl(ProductAvRate product)
         {
             Dispatcher.BeginInvoke((Action)(() => AdminTabControl.SelectedItem = Product));
             FillProductDataGrid(product);
         }
 
-        private void FillProductDataGrid(Product product)
+        private void FillProductDataGrid(ProductAvRate product)
         {
             PrDataGrid.Items.Clear();
-            PrDataGrid.Items.Add(product);
-            SizesDataGrid.ItemsSource = product.sizes;
-            NameProductBlock.Text = product.name;
-            DescriptionProductBlock.Text = product.description;
+            PrDataGrid.Items.Add(product.product);
+            SizesDataGrid.ItemsSource = product.product.sizes;
+            NameProductBlock.Text = product.product.name;
+            DescriptionProductBlock.Text = product.product.description;
+            averageRate.Text = product.averageRate.ToString();
+    
+            if (product.reviews != null && product.reviews.Count(r => r.user.userId == admin.userId) != 0)
+            {
+                RateStackPanel.Visibility = Visibility.Hidden;
+                SetRate.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                RateStackPanel.Visibility = Visibility.Visible;
+                SetRate.Visibility = Visibility.Visible;
+            }
         }
 
         private void CreateOrder_OnClick(object sender, RoutedEventArgs e)
@@ -184,18 +230,21 @@ namespace client
                 if (admin.card == null || admin.card.PaymentCardId == 0) new Card(admin, Stream).ShowDialog();
                 var count = int.Parse(CountOfProduct.Text);
                 if (count <= 0 || deliveryDate.SelectedDate < DateTime.Now.AddDays(1)) throw new Exception();
-                var product = (Product)GGrid.SelectedItem;
-                product.sizes = new List<Size> { (Size)SizesDataGrid.SelectedItem };
-                if (product.sizes[0] == null) throw new Exception();
+                var product = (ProductAvRate)GGrid.SelectedItem;
+                product.product.sizes = new List<Size> { (Size)SizesDataGrid.SelectedItem };
+                if (product.product.sizes[0] == null) throw new Exception();
                 var order = DeliveryAddress.Text == string.Empty
-                    ? new Order(admin, product, count, DateTime.Now, deliveryDate.SelectedDate == null ? DateTime.Now.AddDays(3) : deliveryDate.SelectedDate.Value, 0)
-                    : new Order(admin, product, count, DateTime.Now, DeliveryAddress.Text, deliveryDate.SelectedDate == null ? DateTime.Now.AddDays(3) : deliveryDate.SelectedDate.Value, 0);
+                    ? new Order(admin, product.product, count, DateTime.Now,
+                        deliveryDate.SelectedDate == null ? DateTime.Now.AddDays(3) : deliveryDate.SelectedDate.Value,
+                        0)
+                    : new Order(admin, product.product, count, DateTime.Now, DeliveryAddress.Text,
+                        deliveryDate.SelectedDate == null ? DateTime.Now.AddDays(3) : deliveryDate.SelectedDate.Value,
+                        0);
                 Packages.Send(Stream, Commands.AddOrder.GetString() + order);
                 if (Packages.Recv(Stream) == Answer.Success.GetString())
                 {
                     MessageBox.Show("Заказ успешно создан");
-                    Packages.Send(Stream, Commands.ShowProduct.GetString() + product);
-                    FillProductDataGrid(JsonSerializer.Deserialize<Product>(Packages.Recv(Stream)));
+                    FillProductDataGrid(GetProduct(product.product));
                 }
                 else MessageBox.Show("Ошибка при составлении заказа");
             }
@@ -241,7 +290,7 @@ namespace client
         private void AddProduct(Product product)
         {
             Packages.Send(Stream, Commands.AddProduct.GetString() + product);
-            SelectProductTabControl(product);
+            SelectProductTabControl(GetProduct(product));
         }
 
         private void EditProduct(Product product)
@@ -249,7 +298,7 @@ namespace client
             Packages.Send(Stream, Commands.EditProduct.GetString() + product);
             if (Packages.Recv(Stream) == Answer.Success.GetString())
             {
-                SelectProductTabControl(product);
+                SelectProductTabControl(GetProduct(product));
             }
             else
                 MessageBox.Show(
@@ -290,11 +339,13 @@ namespace client
             Packages.Send(Stream, Commands.ShowUserOrders.GetString() + user);
             SelectedUserOrderGrid.ItemsSource = JsonSerializer.Deserialize<List<Order>>(Packages.Recv(Stream));
         }
+
         private void ShowMyAccountTabControl()
         {
             Dispatcher.BeginInvoke((Action)(() => AdminTabControl.SelectedItem = Account));
             FillAccount();
         }
+
         private void ShowUserTabControl()
         {
             Dispatcher.BeginInvoke((Action)(() => AdminTabControl.SelectedItem = UserAccount));
@@ -343,6 +394,7 @@ namespace client
             Packages.Send(Stream, Commands.FilterUserOrders.GetString() + filter);
             FillOrderTable(JsonSerializer.Deserialize<List<Order>>(Packages.Recv(Stream)));
         }
+
         string getUsersFilter(string filter)
         {
             switch (filter)
@@ -363,6 +415,7 @@ namespace client
             Packages.Send(Stream, Commands.FIlterUsers.GetString() + filter);
             UGrid.ItemsSource = JsonSerializer.Deserialize<List<User>>(Packages.Recv(Stream));
         }
+
         string getGoodsFilter(string filter)
         {
             switch (filter)
@@ -376,6 +429,7 @@ namespace client
 
             return string.Empty;
         }
+
         private void SubmitGoodsFilter_OnClick(object sender, RoutedEventArgs e)
         {
             string column = getGoodsFilter(GoodsFilterColumns.Text);
@@ -390,7 +444,6 @@ namespace client
         {
             Packages.Send(Stream, Commands.ShowOrders.GetString());
             OGrid.ItemsSource = JsonSerializer.Deserialize<List<Order>>(Packages.Recv(Stream));
-
         }
 
         private void TypeButton_OnClick(object sender, RoutedEventArgs e)
@@ -411,8 +464,8 @@ namespace client
             order.orderStatus = 3;
             Packages.Send(Stream, Commands.EditDeliveryStatus.GetString() + order);
             FillMyOrderDataGrid(order);
-            
         }
+
         private void SelectMyOrderTabControl(Order order)
         {
             Dispatcher.BeginInvoke((Action)(() => AdminTabControl.SelectedItem = MyOrderTabItem));
@@ -434,9 +487,10 @@ namespace client
                 MyOrderDeliveryAddress.Text = order.deliveryAddress;
             }
             else MyOrderDeliveryAddress.Text = "адрес не выбран";
+
             MyOrderDeliveryStatus.Text = getStatus(order.orderStatus);
-            if (order.orderStatus == 3) SubmitMyOrder.Visibility= Visibility.Hidden;
-            else SubmitMyOrder.Visibility= Visibility.Visible;
+            if (order.orderStatus == 3) SubmitMyOrder.Visibility = Visibility.Hidden;
+            else SubmitMyOrder.Visibility = Visibility.Visible;
         }
 
         private string getStatus(int status)
@@ -451,10 +505,11 @@ namespace client
 
             return "Ошибка";
         }
+
         private void UserOrderGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var order = (Order)UserOrderGrid.SelectedItem;
-            if(order != null) SelectMyOrderTabControl(order);
+            if (order != null) SelectMyOrderTabControl(order);
         }
 
         private void SubmitUserOrder_OnClick(object sender, RoutedEventArgs e)
@@ -467,6 +522,7 @@ namespace client
             Packages.Send(Stream, Commands.EditDeliveryStatus.GetString() + order);
             FillUserOrderDataGrid(order);
         }
+
         private void SelectUserOrderTabControl(Order order)
         {
             Dispatcher.BeginInvoke((Action)(() => AdminTabControl.SelectedItem = UserOrderTabItem));
@@ -499,7 +555,7 @@ namespace client
             if (order.orderStatus == 3)
             {
                 UserOrderIsDelivered.Visibility = Visibility.Visible;
-                SubmitUserOrder.Visibility= Visibility.Hidden;
+                SubmitUserOrder.Visibility = Visibility.Hidden;
                 wait.Visibility = Visibility.Hidden;
                 send.Visibility = Visibility.Hidden;
                 ready.Visibility = Visibility.Hidden;
@@ -507,7 +563,7 @@ namespace client
             }
             else
             {
-                SubmitUserOrder.Visibility= Visibility.Visible;
+                SubmitUserOrder.Visibility = Visibility.Visible;
                 UserOrderIsDelivered.Visibility = Visibility.Hidden;
                 switch (order.orderStatus)
                 {
@@ -525,13 +581,42 @@ namespace client
                         break;
                 }
             }
-            
         }
 
         private void OGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var order = OGrid.SelectedItem as Order;
             SelectUserOrderTabControl(order);
+        }
+
+        private void SetRate_OnClick(object sender, RoutedEventArgs e)
+        {
+            int rate = 0;
+            if (one.IsChecked == true) rate = 1;
+            else if (two.IsChecked == true) rate = 2;
+            else if (three.IsChecked == true) rate = 3;
+            else if (four.IsChecked == true) rate = 4;
+            else if (five.IsChecked == true) rate = 5;
+            else
+            {
+                MessageBox.Show("Поставьте оценку");
+                return;
+            }
+
+            Review review = new Review(rate, admin, PrDataGrid.Items[0] as Product);
+            Packages.Send(Stream, Commands.SetRate.GetString() + review);
+            if (averageRate.Text == "0")
+            {
+                averageRate.Text = rate.ToString();
+                RateStackPanel.Visibility = Visibility.Hidden;
+                SetRate.Visibility = Visibility.Hidden;
+            }
+
+        }
+
+        private void Exit_OnClick(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }

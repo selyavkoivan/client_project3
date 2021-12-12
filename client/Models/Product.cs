@@ -38,5 +38,7 @@ namespace client.Models
             if (name == string.Empty || price <= 0 || type == string.Empty || !base.isFull()) return false;
             return sizes.Where(s => s.isFull() == false).ToList().Count == 0;
         }
+
+      
     }
 }
