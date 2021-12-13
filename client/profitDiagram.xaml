@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:client"
         xmlns:wpf="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
-        Title="profitDiagram" Height="600" Width="800">
+        Title="profitDiagram" Height="650" Width="800">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

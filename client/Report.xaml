@@ -1,0 +1,23 @@
+﻿<Window x:Class="client.Report"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:client"
+        mc:Ignorable="d"
+        Title="Report" Height="150" Width="500">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles/Resource.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid>
+        <TextBlock Name="report"/>
+        <Border Width="150" Height="50" VerticalAlignment="Bottom">
+            <Button Click="ButtonBase_OnClick" Content="Скопировать"/>
+        </Border>
+    </Grid>
+</Window>
