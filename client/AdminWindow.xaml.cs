@@ -380,6 +380,8 @@ namespace client
                 case "Количество": return "countInOrder";
                 case "Адрес": return "deliveryAddress";
                 case "Дата": return "date";
+                case "Логин": return "login";
+                case "Этап": return "deliveryStatus";
             }
 
             return string.Empty;
@@ -491,6 +493,13 @@ namespace client
             MyOrderDeliveryStatus.Text = getStatus(order.orderStatus);
             if (order.orderStatus == 3) SubmitMyOrder.Visibility = Visibility.Hidden;
             else SubmitMyOrder.Visibility = Visibility.Visible;
+            MyOrderChat.Items.Clear();
+            Packages.Send(Stream, Commands.GetOrderMessages.GetString() + order);
+            List<Message> messages = JsonSerializer.Deserialize<List<Message>>(Packages.Recv(Stream));
+            foreach (var m in messages)
+            {
+                SetMessage(m);
+            }
         }
 
         private string getStatus(int status)
@@ -581,6 +590,13 @@ namespace client
                         break;
                 }
             }
+            UserOrderChat.Items.Clear();
+            Packages.Send(Stream, Commands.GetOrderMessages.GetString() + order);
+            List<Message> messages = JsonSerializer.Deserialize<List<Message>>(Packages.Recv(Stream));
+            foreach (var m in messages)
+            {
+                SetAdminMessage(m);
+            }
         }
 
         private void OGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -626,6 +642,70 @@ namespace client
             Packages.Send(Stream, Commands.ShowAdmin.GetString() + admin);
             admin = JsonSerializer.Deserialize<Admin>(Packages.Recv(Stream));
             FillAdminData(admin);
+        }
+        private void SetAdminMessage(Message message)
+        {
+            string str = message.type ? "получено" : "отправлено";
+            str += " | " + message.date + " >> ";
+            str += message.message;
+            UserOrderChat.Items.Add(str);
+        }
+        private void SetMessage(Message message)
+        {
+            string str = message.type ? "отправлено" : "получено";
+            str += " | " + message.date + " >> ";
+            str += message.message;
+            MyOrderChat.Items.Add(str);
+        }
+        private void SendUserMessage_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (UserMessage.Text == String.Empty) return;
+
+            var message = new Message(DateTime.Now, true, PrMyOrderDataGrid.Items[0] as Order, UserMessage.Text);
+            Packages.Send(Stream, Commands.AddMessage.GetString() + message);
+            SetMessage(message);
+            UserMessage.Text = string.Empty;
+        }
+
+        private void SendAdminMessage_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (AdminMessage.Text == String.Empty) return;
+
+            var message = new Message(DateTime.Now, false, PrUserOrderDataGrid.Items[0] as Order, AdminMessage.Text);
+            Packages.Send(Stream, Commands.AddMessage.GetString() + message);
+            SetAdminMessage(message);
+            AdminMessage.Text = string.Empty;
+        }
+
+        private void ResendUserChat_OnClick(object sender, RoutedEventArgs e)
+        {
+            
+            MyOrderChat.Items.Clear();
+            Packages.Send(Stream, Commands.GetOrderMessages.GetString() + (PrMyOrderDataGrid.Items[0] as Order));
+            foreach (var m in JsonSerializer.Deserialize<List<Message>>(Packages.Recv(Stream)))
+            {
+                SetMessage(m);
+            }
+        }
+
+        private void UpdateAdminMessage_OnClick(object sender, RoutedEventArgs e)
+        {
+            UserOrderChat.Items.Clear();
+            Packages.Send(Stream, Commands.GetOrderMessages.GetString() + (PrUserOrderDataGrid.Items[0] as Order));
+            foreach (var m in JsonSerializer.Deserialize<List<Message>>(Packages.Recv(Stream)))
+            {
+                SetAdminMessage(m);
+            }
+        }
+
+        private void AllOrderFilterSubmit_OnClick(object sender, RoutedEventArgs e)
+        {
+            string column = getOrdersFilter(AllOrderFilterColumns.Text);
+            if (column == String.Empty) return;
+            var filter = new SortConfiguration(column,
+                AllOrderFilter.Text);
+            Packages.Send(Stream, Commands.FilterOrders.GetString() + filter);
+            OGrid.ItemsSource = JsonSerializer.Deserialize<List<Order>>(Packages.Recv(Stream));
         }
     }
 }

@@ -279,7 +279,7 @@
                 </Grid>
             </ScrollViewer>
         </TabItem>
-        <TabItem Name="MyOrderTabItem" >
+        <TabItem Name="MyOrderTabItem" Visibility="Hidden">
             <ScrollViewer>
                 <Grid Margin="20" Name="PrMyOrderGrid">
                     <Grid.RowDefinitions>
@@ -299,6 +299,10 @@
                         </Canvas>
                     </Grid>
                     <Grid Grid.Row="1" Margin="0 10 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="300" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
                         <StackPanel>
                             <TextBlock Width="850" TextWrapping="Wrap"
                                        Name="DescriptionMyOrderProductBlock" FontSize="18" FontWeight="Thin" />
@@ -347,11 +351,7 @@
                                 </DataGrid.CellStyle>
                             </DataGrid>
                             <TextBlock FontSize="18" FontWeight="Thin" Text="Данные заказа" />
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="300" />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
+                            
                                 <StackPanel Grid.Column="0">
                                     <Border Padding="30 0">
                                         <TextBlock Text="Размер" />
@@ -379,15 +379,22 @@
                                     <TextBlock FontWeight="Thin" Name="MyOrderDeliveryStatus" />
                                     <Button Name="SubmitMyOrder" Content="Подтвердить получение" Click="SubmitMyOrder_OnClick"/>
                                 </StackPanel>
-                                <StackPanel Grid.Column="1">
-                                    <ListBox Name="Chat" Height="200"/>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBox Name="UserMessage"/>
-                                        <Button Name="SendUserMessage" Content="Отправить"/>
-                                    </StackPanel>
-                                </StackPanel>
-                                </Grid>
+                            
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" Name="MyOrderChat" Height="370">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox Width="350" TextWrapping="Wrap" Name="UserMessage"/>
+                                <Button Name="SendUserMessage" Content="Отправить" Click="SendUserMessage_OnClick"/>
+                                <Button Name="UpdateUserMessage" Content="Обновить" Click="UpdateUserMessage_OnClick"/>
                             </StackPanel>
+                        </StackPanel>
                         </Grid>
                     </Grid>
                 </ScrollViewer>

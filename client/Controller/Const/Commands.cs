@@ -31,7 +31,10 @@
         SetRate,
         GetRates,
         GetProductRates,
-        EditUserPassword
+        EditUserPassword,
+        AddMessage,
+        GetOrderMessages,
+        FilterOrders
     }
   
     public static class CommandsExtensions
@@ -70,6 +73,9 @@
                 case Commands.GetRates: return "grs";
                 case Commands.GetProductRates: return "gpr";
                 case Commands.EditUserPassword: return "eup";
+                case Commands.AddMessage: return "ams";
+                case Commands.GetOrderMessages: return "gom";
+                case Commands.FilterOrders: return "fod";
                 default: return "err";
             }
         }

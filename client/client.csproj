@@ -122,6 +122,7 @@
     <Compile Include="Models\CalculatedProduct.cs" />
     <Compile Include="Models\CalculatedUser.cs" />
     <Compile Include="Models\Material.cs" />
+    <Compile Include="Models\Message.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\PaymentCard.cs" />
     <Compile Include="Models\Product.cs" />

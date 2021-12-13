@@ -267,6 +267,13 @@ namespace client
             MyOrderDeliveryStatus.Text = getStatus(order.orderStatus);
             if (order.orderStatus == 3) SubmitMyOrder.Visibility= Visibility.Hidden;
             else SubmitMyOrder.Visibility= Visibility.Visible;
+            MyOrderChat.Items.Clear();
+            Packages.Send(Stream, Commands.GetOrderMessages.GetString() + order);
+            List<Message> messages = JsonSerializer.Deserialize<List<Message>>(Packages.Recv(Stream));
+            foreach (var m in messages)
+            {
+                SetMessage(m);
+            }
         }
 
         private string getStatus(int status)
@@ -327,6 +334,33 @@ namespace client
             Packages.Send(Stream, Commands.ShowUser.GetString() + user);
             user = JsonSerializer.Deserialize<User>(Packages.Recv(Stream));
             FillUserData(user);
+        }
+
+        private void SetMessage(Message message)
+        {
+            string str = message.type ? "отправлено" : "получено";
+            str += " | " + message.date + " >> ";
+            str += message.message;
+            MyOrderChat.Items.Add(str);
+        }
+        private void SendUserMessage_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (UserMessage.Text == String.Empty) return;
+
+            var message = new Message(DateTime.Now, true, PrMyOrderDataGrid.Items[0] as Order, UserMessage.Text);
+            Packages.Send(Stream, Commands.AddMessage.GetString() + message);
+            SetMessage(message);
+            UserMessage.Text = string.Empty;
+        }
+
+        private void UpdateUserMessage_OnClick(object sender, RoutedEventArgs e)
+        {
+            MyOrderChat.Items.Clear();
+            Packages.Send(Stream, Commands.GetOrderMessages.GetString() + (PrMyOrderDataGrid.Items[0] as Order));
+            foreach (var m in JsonSerializer.Deserialize<List<Message>>(Packages.Recv(Stream)))
+            {
+                SetMessage(m);
+            }
         }
     }
 }
