@@ -67,3 +67,5 @@ X:\bsuir\sem5\курсач\client\client\obj\Debug\LifiChartDiagram.g.cs
 X:\bsuir\sem5\курсач\client\client\obj\Debug\LifiChartDiagram.baml
 X:\bsuir\sem5\курсач\client\client\obj\Debug\profitDiagram.g.cs
 X:\bsuir\sem5\курсач\client\client\obj\Debug\profitDiagram.baml
+X:\bsuir\sem5\курсач\client\client\obj\Debug\EditPassword.g.cs
+X:\bsuir\sem5\курсач\client\client\obj\Debug\EditPassword.baml

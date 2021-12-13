@@ -20,6 +20,7 @@
             <DatePicker Name="SelectYear" />
     
             <Button Click="Sunmit_OnClick" Name="Sunmit" Content="Рассчитать" />
+            <Button Content="Отчет" Name="Report" Click="Report_OnClick"/>
         </StackPanel>
         <wpf:CartesianChart Name="profitChart" Series="{Binding SeriesCollection}" Height="400" LegendLocation="Right" Grid.ColumnSpan="2" Margin="0,0,-0.4,0" >
          
@@ -28,5 +29,6 @@
                 <wpf:Axis Title="Прибыль, BYN"></wpf:Axis>
             </wpf:CartesianChart.AxisY>
         </wpf:CartesianChart>
+        
     </Grid>
 </Window>

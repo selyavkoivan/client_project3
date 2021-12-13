@@ -50,15 +50,17 @@
                                 <TextBlock Text="Имя" />
                             </Border>
                             <TextBox Name="Name" />
-                            <Border HorizontalAlignment="Center" VerticalAlignment="Top">
+                            <Border Width="100" HorizontalAlignment="Center" VerticalAlignment="Top">
                                 <Button Click="ButtonBase_OnClick" Content="изменить" />
                             </Border>
-                            <Border HorizontalAlignment="Center" VerticalAlignment="Top">
+                            <Border Width="100" HorizontalAlignment="Center" VerticalAlignment="Top">
                                 <Button Name="ShowCard" Content="Карта" Click="ShowCard_OnClick" />
                             </Border>
-                            <Border HorizontalAlignment="Center" VerticalAlignment="Top">
-                                <Button Name="Exit" Content="Выход" Click="Exit_OnClick
-                                " />
+                            <Border Width="100" HorizontalAlignment="Center" VerticalAlignment="Top">
+                                <Button Name="EditUser" Content="Пароль" Click="EditUser_OnClick" />
+                            </Border>
+                            <Border Width="100" HorizontalAlignment="Center" VerticalAlignment="Top">
+                                <Button Name="Exit" Content="Выход" Click="Exit_OnClick" />
                             </Border>
                         </StackPanel>
 

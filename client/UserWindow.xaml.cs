@@ -319,5 +319,14 @@ namespace client
         {
             Close();
         }
+
+        private void EditUser_OnClick(object sender, RoutedEventArgs e)
+        {
+            EditPassword oEditPassword = new EditPassword(user, Stream);
+            oEditPassword.ShowDialog();
+            Packages.Send(Stream, Commands.ShowUser.GetString() + user);
+            user = JsonSerializer.Deserialize<User>(Packages.Recv(Stream));
+            FillUserData(user);
+        }
     }
 }

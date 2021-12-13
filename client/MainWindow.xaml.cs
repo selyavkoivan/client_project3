@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
@@ -83,6 +84,11 @@ namespace client
         {
             InputTextBoxPassword.BorderBrush = Brushes.Black;
             InputTextBoxLogin.BorderBrush = Brushes.Black;
+        }
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            Stream.Close();
+            Application.Current.Shutdown();
         }
     }
 }

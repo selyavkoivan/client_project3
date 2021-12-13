@@ -56,5 +56,10 @@ namespace client
             filteredOrder = orders.Where(o => o.date.Year == SelectYear.SelectedDate.Value.Year).ToList();
             FillDiagram();
         }
+
+        private void Report_OnClick(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

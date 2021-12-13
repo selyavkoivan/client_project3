@@ -109,6 +109,9 @@
     <Compile Include="Controller\Const\Answer.cs" />
     <Compile Include="Controller\Const\Commands.cs" />
     <Compile Include="Controller\Const\Role.cs" />
+    <Compile Include="EditPassword.xaml.cs">
+      <DependentUpon>EditPassword.xaml</DependentUpon>
+    </Compile>
     <Compile Include="LifiChartDiagram.xaml.cs">
       <DependentUpon>LifiChartDiagram.xaml</DependentUpon>
     </Compile>
@@ -145,6 +148,7 @@
     </Compile>
     <Page Include="AdminWindow.xaml" />
     <Page Include="Card.xaml" />
+    <Page Include="EditPassword.xaml" />
     <Page Include="LifiChartDiagram.xaml" />
     <Page Include="MainWindow.xaml" />
     <Page Include="profitDiagram.xaml" />
